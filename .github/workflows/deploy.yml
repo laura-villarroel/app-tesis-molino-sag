@@ -2,20 +2,18 @@ name: Deploy Angular to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,26 +25,49 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build (production)
         run: npm run build -- --configuration production --base-href /app-tesis-molino-sag/
 
-      # SPA fallback (evita 404 al refrescar rutas internas)
-      - name: Add SPA fallback (404.html)
+      # 🔎 Detecta automáticamente dónde quedó el index.html
+      - name: Resolve dist folder (find index.html)
         run: |
-            DIST_DIR=$(ls -d dist/* | head -n 1)
-            echo "DIST_DIR=$DIST_DIR"
-            cp "$DIST_DIR/index.html" "$DIST_DIR/404.html"
+          DIST_DIR=$(ls -d dist/* | head -n 1)
+          echo "DIST_DIR=$DIST_DIR"
+
+          INDEX_HTML=$(find "$DIST_DIR" -name index.html | head -n 1)
+          echo "INDEX_HTML=$INDEX_HTML"
+
+          if [ -z "$INDEX_HTML" ]; then
+            echo "❌ No se encontró index.html dentro de $DIST_DIR"
+            find dist -maxdepth 4 -type f | head -n 200
+            exit 1
+          fi
+
+          SITE_DIR=$(dirname "$INDEX_HTML")
+          echo "SITE_DIR=$SITE_DIR" >> $GITHUB_ENV
+          echo "✅ SITE_DIR=$SITE_DIR"
+
+      - name: Add SPA fallback (404.html)
+        run: cp "$SITE_DIR/index.html" "$SITE_DIR/404.html"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: ${{ env.SITE_DIR }}
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
