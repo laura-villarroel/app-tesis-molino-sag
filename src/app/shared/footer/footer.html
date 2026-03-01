@@ -1,0 +1,30 @@
+<footer class="tFooter">
+  <div class="tFooter__inner">
+    <!-- LEFT -->
+    <div class="tFooter__left">
+      <img class="tFooter__logo" src="/assets/branding/pucp_logo.png" alt="PUCP" />
+      <div class="tFooter__brand">
+        <div class="tFooter__uni">Pontificia Universidad Católica del Perú</div>
+        <div class="tFooter__school">Escuela de Posgrado</div>
+      </div>
+    </div>
+
+    <!-- CENTER -->
+    <div class="tFooter__centerWrap">
+      <div class="tFooter__center" [title]="thesisTitle">
+        {{ thesisTitle }}
+      </div>
+
+
+      <div class="tFooter__copy">
+        © {{ year }} · {{ author }}
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="tFooter__right">
+      <div class="tFooter__year">{{ year }}</div>
+      <div class="tFooter__loc">{{ location }}</div>
+    </div>
+  </div>
+</footer>

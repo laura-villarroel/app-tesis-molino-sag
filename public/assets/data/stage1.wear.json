@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0",
+  "updatedAt": "2026-01-28",
+  "stage": 1,
+  "sheet": "ETAPA1",
+  "items": {
+    "E1–V4–L2": {
+      "scenarioId": "E1–V4–L2",
+      "wearVideoDefault": "https://youtu.be/gU-LV4qDfp4",
+      "totalTime_months": 6.0,
+      "base": {
+        "transition": "E1",
+        "dH_mm": 0.0,
+        "v_mm_h": 0.0,
+        "t_months": 6.0,
+        "statesImage": "assets/stage1/E1_0.png"
+      },
+      "transitions": [
+        {
+          "transition": "E2",
+          "dH_mm": 44.5,
+          "v_mm_h": 0.05,
+          "t_months": 1.2,
+          "statesImage": "assets/stage1/E2_25.png"
+        },
+        {
+          "transition": "E3",
+          "dH_mm": 44.5,
+          "v_mm_h": 0.04,
+          "t_months": 1.38,
+          "statesImage": "assets/stage1/E3_50.png"
+        },
+        {
+          "transition": "E4",
+          "dH_mm": 44.5,
+          "v_mm_h": 0.04,
+          "t_months": 1.38,
+          "statesImage": "assets/stage1/E4_75.png"
+        },
+        {
+          "transition": "E5",
+          "dH_mm": 44.5,
+          "v_mm_h": 0.03,
+          "t_months": 2.05,
+          "statesImage": "assets/stage1/E5_100.png"
+        }
+      ]
+    }
+  }
+}

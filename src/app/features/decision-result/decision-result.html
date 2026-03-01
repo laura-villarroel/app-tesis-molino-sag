@@ -1,0 +1,188 @@
+<section class="resultCard">
+  <ng-container *ngIf="vm$ | async as vm">
+    <!-- TOP BAR -->
+    <div class="topBar">
+      <div class="topLeft">
+        <span class="pill">{{ state ?? '—' }}</span>
+
+        <div class="titleBlock">
+          <div class="titleLabel">Escenario recomendado</div>
+          <div class="titleValue">{{ vm.id }}</div>
+
+          <a class="topLink below" *ngIf="scenarioLink" [routerLink]="scenarioLink">
+            Ver resumen del escenario →
+          </a>
+        </div>
+      </div>
+
+      <div class="topRight">
+        <div class="rangeBox">
+          <div class="rangeTitle">Rango H para este estado</div>
+          <div class="rangeValue">{{ stateRangeText ?? '—' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEDIA-->
+    <div class="mediaGrid">
+      <!-- IMAGEN -->
+      <section class="panel">
+        <header class="panelHeader">
+          <div class="panelTitle">Ángulos DEM (referencia)</div>
+          <div class="panelSub">Vista superior — escenario {{ vm.id }}</div>
+        </header>
+
+        <div class="mediaBox" *ngIf="vm.general?.anglesImage as img">
+          <button
+            class="mediaBtn"
+            type="button"
+            (click)="openLightbox(img, 'Ángulos DEM — ' + vm.id)"
+            aria-label="Abrir imagen en grande"
+          >
+            <img class="mediaImg" [src]="img" [alt]="'Ángulos DEM ' + vm.id" loading="lazy" />
+            <span class="zoom">⤢</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- VIDEO -->
+      <section class="panel">
+        <header class="panelHeader">
+          <div class="panelTitle">Simulación DEM sin rotura</div>
+          <div class="panelSub">Etapa 2 — escenario {{ vm.id }}</div>
+        </header>
+
+        <div class="mediaBox">
+          <ng-container *ngIf="vm.videoEmbed; else noVideo">
+            <div class="mediaFrame" aria-label="Video de simulación">
+              <iframe
+                [src]="vm.videoEmbed"
+                title="Simulación DEM sin rotura (Etapa 2)"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </ng-container>
+
+          <ng-template #noVideo>
+            <div class="noMedia">No hay video configurado para {{ vm.id }}.</div>
+          </ng-template>
+        </div>
+
+        <div class="panelFoot" *ngIf="vm.stage2?.indGlobal !== undefined">
+          Indicador global (Etapa 2): <b>{{ num(vm.stage2.indGlobal, 2) }}</b>
+        </div>
+      </section>
+    </div>
+
+    <!-- KPIs -->
+<!-- KPIs -->
+<div class="kpiGrid kpiGrid--primary">
+  <div class="kpi kpi--primary kpi--sm kpi--accent kpi--speed" *ngIf="vm.general as g">
+    <div class="kpi__label">Velocidad</div>
+    <div class="kpi__value kpi__value--big">
+      {{ num(g.rpm, 2) }} <span class="kpi__unit">rpm</span>
+      <span class="kpi__sub">({{ pct(g.NcPct) }} de Nc)</span>
+    </div>
+  </div>
+
+  <div class="kpi kpi--primary kpi--sm kpi--accent kpi--fill" *ngIf="vm.general as g">
+    <div class="kpi__label">Llenado total</div>
+    <div class="kpi__value kpi__value--big">
+      {{ pct(g.fillPct) }}
+      <span class="kpi__sub">{{ num(g.totalMass_t, 2) }} t</span>
+    </div>
+  </div>
+
+
+  <div class="kpi kpi--primary kpi--wide" *ngIf="vm.general as g">
+    <div class="kpi__label">Composición de carga</div>
+    <div class="chargeRow">
+      <div class="chargeItem">
+        <span class="chargeName">Bolas</span>
+        <span class="chargeVal">{{ pct(g.ballsPct) }}</span>
+        <span class="chargeSub">{{ num(g.ballsMass_t, 2) }} t</span>
+      </div>
+
+      <div class="chargeItem">
+        <span class="chargeName">Rocas</span>
+        <span class="chargeVal">{{ pct(g.rocksPct) }}</span>
+        <span class="chargeSub">{{ num(g.rocksMass_t, 2) }} t</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- indicador -->
+<div class="kpi kpi--primary kpi--xs" *ngIf="vm.stage45 as p">
+  <div class="kpi__label">Indicador general</div>
+
+  <div class="kpi__value kpi__value--big">
+    {{ num(p.indGlobal, 2) }}
+    <span class="kpiBadge" [class.ok]="p.indGlobal >= 0.7" [class.mid]="p.indGlobal < 0.7 && p.indGlobal >= 0.5" [class.low]="p.indGlobal < 0.5">
+      {{ p.indGlobal >= 0.7 ? 'Bueno' : (p.indGlobal >= 0.5 ? 'Medio' : 'Bajo') }}
+    </span>
+  </div>
+
+  <div class="kpiBar">
+    <span class="kpiBar__fill" [style.width.%]="(p.indGlobal ?? 0) * 100"></span>
+  </div>
+</div>
+
+</div>
+
+
+<!-- Fila 2 -->
+<div class="kpiGrid kpiGrid--secondary">
+  <div class="kpi" *ngIf="vm.general as g">
+    <div class="kpi__label">Potencia estimada (DEM)</div>
+    <div class="kpi__value">{{ num(g.powerDem_kW, 0) }} <span class="kpi__unit">kW</span></div>
+  </div>
+
+  <div class="kpi" *ngIf="vm.stage45 as p">
+    <div class="kpi__label">Capacidad estimada</div>
+    <div class="kpi__value">{{ num(p.capacity_tph, 2) }} <span class="kpi__unit">t/h</span></div>
+  </div>
+
+  <div class="kpi" *ngIf="vm.stage45 as p">
+    <div class="kpi__label">P80 estimado</div>
+    <div class="kpi__value">{{ num(p.p80_mm, 2) }} <span class="kpi__unit">mm</span></div>
+  </div>
+
+  <div class="kpi" *ngIf="vm.adaptive as a">
+    <div class="kpi__label">Velocidad de desgaste estimada</div>
+    <div class="kpi__value">{{ num(a.v_mm_h, 3) }} <span class="kpi__unit">mm/h</span></div>
+  </div>
+</div>
+
+
+    <!-- Meta final -->
+    <div class="metaRow">
+      <div class="meta">
+        <div class="meta__k">Entrada</div>
+        <div class="meta__v">H{{ hMm ?? '—' }} mm</div>
+        <div class="meta__s">Espesor medido del lifter bajo.</div>
+      </div>
+
+      <div class="meta">
+        <div class="meta__k">Setpoints</div>
+        <div class="meta__v">{{ ncFillText ?? '—' }}</div>
+        <div class="meta__s">Resumen del estado.</div>
+      </div>
+
+      <div class="meta meta--actions" *ngIf="scenarioLink">
+        <a class="btn btn--cta" [routerLink]="scenarioLink">Abrir resumen {{ vm.id }}</a>
+        <a class="btn btn--ghost" [routerLink]="['/biblioteca']">Ir a biblioteca</a>
+      </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" [class.isOpen]="lightboxOpen" (click)="closeLightbox()">
+      <div class="lightbox__panel" (click)="$event.stopPropagation()">
+        <button class="lightbox__close" type="button" (click)="closeLightbox()">✕</button>
+        <img [src]="lightboxSrc" [alt]="lightboxAlt" />
+        <div class="lightbox__caption">{{ lightboxAlt }}</div>
+      </div>
+    </div>
+  </ng-container>
+</section>

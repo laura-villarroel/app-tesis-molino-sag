@@ -1,0 +1,717 @@
+<div class="wrap" *ngIf="(vm$ | async) as vm">
+  <p *ngIf="vm.loading" class="muted">Cargando…</p>
+
+  <div *ngIf="!vm.loading && vm.error" class="error">
+    <b>Error</b>
+    <div style="margin-top: 6px">{{ vm.error }}</div>
+  </div>
+
+  <ng-container *ngIf="!vm.loading && !vm.error">
+
+    <div class="topMask" aria-hidden="true"></div>
+
+
+
+   <section class="card scenarioHeaderSticky" #fixedHeaderEl id="tabTop">
+      <div class="fixedTopRow">
+        <div class="titleBlock">
+          <h1 class="title">{{ vm.id }}</h1>
+          <div class="subtitle">
+            Panel unificado: header fijo + contenido por etapa
+          </div>
+        </div>
+
+        <a class="btn" routerLink="/biblioteca">← Volver a biblioteca</a>
+      </div>
+
+      <div class="tabs">
+        <button
+          class="tab"
+          [class.isOn]="(tab$ | async) === 'general'"
+          (click)="setTab('general')"
+          type="button"
+        >
+          <div class="tab__k">General</div>
+          <div class="tab__s">Operación + carga</div>
+        </button>
+
+        <button
+          class="tab"
+          [disabled]="!vm.hasStage1"
+          [class.isOn]="(tab$ | async) === 'stage1'"
+          (click)="setTab('stage1')"
+          type="button"
+        >
+          <div class="tab__k">Etapa 1</div>
+          <div class="tab__s">Desgaste + estados</div>
+        </button>
+
+        <button
+          class="tab"
+          [disabled]="!vm.hasStage2"
+          [class.isOn]="(tab$ | async) === 'stage2'"
+          (click)="setTab('stage2')"
+          type="button"
+        >
+          <div class="tab__k">Etapa 2</div>
+          <div class="tab__s">DEM + video</div>
+        </button>
+
+<button
+  class="tab"
+  [class.disabled]="!vm.hasStage3"
+  [disabled]="!vm.hasStage3"
+  (click)="vm.hasStage3 && setTab('stage3')"
+>
+  <div>Etapa 3</div>
+  <div class="muted">FEM</div>
+</button>
+
+<button
+  class="tab"
+  [class.disabled]="!vm.hasStage4"
+  [disabled]="!vm.hasStage4"
+  (click)="vm.hasStage4 && setTab('stage4')"
+>
+  <div>Etapa 4</div>
+  <div class="muted">Desgaste + velocidad</div>
+</button>
+
+<button
+  class="tab"
+  [class.disabled]="!vm.hasStage5"
+  [disabled]="!vm.hasStage5"
+  (click)="vm.hasStage5 && setTab('stage5')"
+>
+  <div>Etapa 5</div>
+  <div class="muted">Producción</div>
+</button>
+
+<button
+  class="tab"
+  [class.disabled]="!vm.hasStage6"
+  [disabled]="!vm.hasStage6"
+  (click)="vm.hasStage6 && setTab('stage6')"
+>
+  <div>Etapa 6</div>
+  <div class="muted">Integración</div>
+</button>
+
+
+      </div>
+
+      <!-- KPIs de General  -->
+      <div class="kpisGrid">
+     <div class="kpi">
+  <div class="kpi__label">Espesor H (mm)</div>
+  <div class="kpi__value">
+    {{ fmt(g(vm.general,'thicknessH_mm','H_mm','H','espesor_h_mm','espesorH_mm'),2) }}
+  </div>
+</div>
+
+        <div class="kpi">
+          <div class="kpi__label">% desgaste</div>
+          <div class="kpi__value">
+            {{ pct(g(vm.general,'wearPct','wear_pct','desgaste_pct','desgaste')) }}
+          </div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">Espesor H (mm)</div>
+          <div class="kpi__value">
+      {{ fmt(g(vm.general,'thicknessH_mm','H_mm','H','espesor_h_mm','espesorH_mm'),2) }}
+          </div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">%Nc</div>
+          <div class="kpi__value">
+            {{ pct(g(vm.general,'NcPct','nc_pct','pctNc','Nc')) }}
+          </div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">N (rpm)</div>
+          <div class="kpi__value">
+            {{ fmt(g(vm.general,'rpm','N_rpm','n_rpm','N'),2) }}
+          </div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">Llenado total (%)</div>
+          <div class="kpi__value">
+            {{ pct(g(vm.general,'fillPct','fill_pct','llenado_pct','llenado')) }}
+          </div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">% bolas</div>
+          <div class="kpi__value">
+            {{ pct(g(vm.general,'ballsPct','balls_pct','pctBolas')) }}
+          </div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">% rocas</div>
+          <div class="kpi__value">
+            {{ pct(g(vm.general,'rocksPct','rocks_pct','pctRocas')) }}
+          </div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">Masa total (t)</div>
+          <div class="kpi__value">
+            {{ fmt(g(vm.general,'totalMass_t','total_mass_t','masa_total_t'),2) }}
+          </div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">P_Motor DEM (kW)</div>
+          <div class="kpi__value">
+            {{ fmt(g(vm.general,'powerDem_kW','p_motor_dem_kw','p_motor_dem_kW','P_Motor_DEM_kW'),1) }}
+          </div>
+        </div>
+      </div>
+    </section>
+<!-- SPACER -->
+<div class="headerSpacer" aria-hidden="true"></div>
+    <!-- CONTENIDO  -->
+    <div class="belowHeader">
+      <div class="grid2 heroBlock">
+        <!-- Imagen principal -->
+         <ng-container *ngIf="(tab$ | async) === 'general'">
+        <section class="card panel">
+          <div class="panel__title">Imagen principal (anglesImage)</div>
+
+          <ng-container *ngIf="toAssetUrl(g(vm.general,'anglesImage','angles_image','anglesImg')) as img">
+            <button
+              class="imgBtn"
+              type="button"
+              (click)="openPreview(img, vm.id + ' · anglesImage')"
+              title="Abrir en grande"
+            >
+              <img [src]="img" class="img" alt="anglesImage" />
+            </button>
+            <div class="muted small" style="margin-top: 6px">Click para ampliar.</div>
+          </ng-container>
+
+          <div *ngIf="!toAssetUrl(g(vm.general,'anglesImage','angles_image','anglesImg'))" class="muted">
+            — Sin imagen para este escenario —
+          </div>
+        </section>
+
+
+   <!-- Resumen -->
+<section class="card panel">
+  <div class="panel__title">Resumen</div>
+
+  <table class="kvTable">
+    <tr *ngFor="let r of vm.generalSummaryRows">
+      <td [class.muted]="r.muted">{{ r.label }}</td>
+      <td
+        [class.muted]="r.muted"
+        [class.mono]="r.mono"
+      >
+        {{ r.value }}
+      </td>
+    </tr>
+  </table>
+</section>
+</ng-container>
+      </div>
+
+      <section class="card panel stageContent">
+        <ng-container [ngSwitch]="(tab$ | async)">
+        <div *ngSwitchCase="'general'"></div>
+
+<div *ngSwitchCase="'stage1'">
+  <div class="panel__title">
+    Etapa 1 · Desgaste <span class="muted">({{ vm.stage1StateLabel ?? 'Estado —' }})</span>
+  </div>
+
+  <div class="callout" style="margin-bottom: 14px">
+    <div class="smallcaps">Nota metodológica</div>
+    <div class="muted" style="margin-top: 6px">
+      La simulación DEM completa se ejecutó para el caso base <b>E1–V4–L2</b>.
+      A partir de ese caso se extrajeron los perfiles geométricos correspondientes
+      a cada estado de desgaste (E1–E5). Para cada escenario evaluado, se aplica
+      el perfil asociado a su estado, manteniendo como referencia el video del caso base.
+    </div>
+  </div>
+
+  <div class="stage1Grid">
+
+    <section class="card panel">
+      <div class="panel__title">Video (caso base)</div>
+
+      <ng-container *ngIf="asYouTubeEmbed(vm.stage1Video) as yt; else noStage1Video">
+        <div class="videoWrap">
+          <iframe
+            [src]="yt"
+            title="Simulación base E1–V4–L2"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </ng-container>
+
+      <ng-template #noStage1Video>
+        <div class="muted">— Sin video definido para Etapa 1 —</div>
+      </ng-template>
+    </section>
+
+
+    <section class="card panel">
+  <div class="panel__title">
+  Perfil por estado
+  <span class="badgeState">{{ vm.stage1StateLabel ?? 'Estado —' }}</span>
+</div>
+      <ng-container *ngIf="vm.stage1StateImage as img; else noStage1Img">
+        <div class="imgCard" (click)="openPreview(img,'Etapa 1 · Perfil por estado')">
+          <img [src]="toAssetUrl(img) ?? img" alt="Perfil geométrico por estado" />
+        <div class="caption">
+  Perfil aplicado: <b>{{ vm.stage1StateLabel ?? '—' }}</b> · Click para ampliar.
+</div>
+        </div>
+      </ng-container>
+
+      <ng-template #noStage1Img>
+        <div class="muted">— No hay imagen para este estado —</div>
+      </ng-template>
+    </section>
+  </div>
+</div>
+
+<div *ngSwitchCase="'stage2'">
+  <div class="panel__title">Etapa 2 · DEM + indicadores</div>
+
+  <!-- VIDEO -->
+  <ng-container *ngIf="asYouTubeEmbed(vm.stage2Video) as yt">
+    <div class="videoWrap" style="margin-bottom: 16px">
+      <iframe
+        [src]="yt"
+        title="Simulación DEM"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </ng-container>
+
+  <!-- IMAGEN (anglesImage) + DATOS -->
+  <div class="stage2Grid">
+
+    <!-- Izquierda: anglesImage (General) -->
+    <section class="card panel">
+      <div class="panel__title">Imagen DEM (anglesImage)</div>
+
+      <ng-container *ngIf="vm.stage2MainImage as img; else noAnglesImg">
+        <div class="imgCard" (click)="openPreview(img, 'Etapa 2 · anglesImage')">
+          <img [src]="toAssetUrl(img) ?? img" alt="anglesImage" />
+          <div class="caption">Click para ampliar.</div>
+        </div>
+      </ng-container>
+
+      <ng-template #noAnglesImg>
+        <div class="muted">— No se encontró anglesImage en general.json —</div>
+      </ng-template>
+    </section>
+
+
+    <section class="card panel">
+  <div class="panel__title">Resumen</div>
+
+  <table class="kvTable">
+<tr
+  *ngFor="let r of vm.stage2Rows"
+  [class.rowHighlight]="r.label === 'Indicador global' || r.label === 'Resultado'"
+>
+  <td [class.muted]="r.muted">{{ r.label }}</td>
+
+  <td
+    [class.muted]="r.muted"
+    [class.mono]="r.mono"
+    [class.valueStrong]="r.label === 'Indicador global'"
+  >
+    <!-- Resultado -->
+    <ng-container *ngIf="r.label === 'Resultado'; else normalValue">
+      <span
+        class="badgeResult"
+        [class.badgeWinner]="r.value === 'Ganador etapa 2'"
+        [class.badgeNoWinner]="r.value === 'No ganador'"
+      >
+        {{ r.value }}
+      </span>
+    </ng-container>
+
+    <ng-template #normalValue>
+      {{ r.value }}
+    </ng-template>
+  </td>
+</tr>
+  </table>
+</section>
+
+  </div>
+
+  <!-- GALERÍA INFERIOR -->
+  <section class="card panel" style="margin-top: 14px">
+    <div class="panel__title">Imágenes adicionales · Etapa 2</div>
+
+    <div class="stage2Gallery" *ngIf="vm.stage2ExtraImages?.length; else noStage2Imgs">
+      <div
+        class="stage2Thumb"
+        *ngFor="let it of vm.stage2ExtraImages"
+        (click)="openPreview(it.src, 'Etapa 2 · ' + it.label)"
+      >
+        <img [src]="toAssetUrl(it.src) ?? it.src" [alt]="it.label" />
+        <div class="caption">{{ it.label }}</div>
+      </div>
+    </div>
+
+    <ng-template #noStage2Imgs>
+      <div class="muted">— No hay imágenes adicionales definidas en stage2.kpi.json —</div>
+    </ng-template>
+  </section>
+</div>
+          <div *ngSwitchCase="'stage3'">
+  <div class="panel__title">Etapa 3 · FEM</div>
+
+  <div class="stage2Grid">
+    <!-- Izquierda:imagen DEM (anglesImage) -->
+    <section class="card panel">
+      <div class="panel__title">Imagen DEM (anglesImage)</div>
+
+      <ng-container *ngIf="vm.stage3MainImage as img; else noStage3MainImg">
+        <div class="imgCard" (click)="openPreview(img, 'Etapa 3 · anglesImage')">
+          <img [src]="toAssetUrl(img) ?? img" alt="anglesImage" />
+          <div class="caption">Click para ampliar.</div>
+        </div>
+      </ng-container>
+
+      <ng-template #noStage3MainImg>
+        <div class="muted">— No se encontró anglesImage —</div>
+      </ng-template>
+    </section>
+
+    <!-- Derecha: Resumen FEM -->
+    <section class="card panel">
+      <div class="panel__title">Resumen</div>
+
+      <table class="kvTable">
+        <tr *ngFor="let r of vm.stage3Rows">
+          <td [class.muted]="r.muted">{{ r.label }}</td>
+          <td [class.muted]="r.muted" [class.mono]="r.mono">{{ r.value }}</td>
+        </tr>
+      </table>
+    </section>
+  </div>
+
+  <!-- Imágenes extra FEM  -->
+  <section class="card panel" style="margin-top: 14px">
+    <div class="panel__title">Imágenes adicionales · Etapa 3</div>
+
+    <div class="stage2Gallery" *ngIf="vm.stage3ExtraImages?.length; else noStage3Imgs">
+      <div
+        class="stage2Thumb"
+        *ngFor="let it of vm.stage3ExtraImages"
+        (click)="openPreview(it.src, 'Etapa 3 · ' + it.label)"
+      >
+        <img [src]="toAssetUrl(it.src) ?? it.src" [alt]="it.label" />
+        <div class="caption">{{ it.label }}</div>
+      </div>
+    </div>
+
+    <ng-template #noStage3Imgs>
+      <div class="muted">— No hay imágenes FEM definidas —</div>
+    </ng-template>
+  </section>
+</div>
+        <div *ngSwitchCase="'stage4'">
+  <div class="panel__title">Etapa 4 · Desgaste</div>
+
+  <!-- VIDEO -->
+  <ng-container *ngIf="asYouTubeEmbed(vm.stage4Video) as yt; else noWearVideo">
+    <div class="videoWrap" style="margin-bottom: 16px">
+      <iframe
+        [src]="yt"
+        title="Wear DEM"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </ng-container>
+
+  <ng-template #noWearVideo>
+    <div class="muted">— No hay wearVideo definido —</div>
+  </ng-template>
+
+  <!-- IMAGEN + RESUMEN -->
+  <div class="stage2Grid">
+    <!-- Izquierda: wearImage -->
+    <section class="card panel">
+  <div class="panel__title">Imagen DEM (anglesImage)</div>
+
+  <ng-container *ngIf="vm.stage4MainImage as img; else noAngles">
+    <div class="imgCard" (click)="openPreview(img, 'Etapa 4 · anglesImage')">
+      <img [src]="toAssetUrl(img) ?? img" alt="anglesImage" />
+      <div class="caption">Click para ampliar.</div>
+    </div>
+  </ng-container>
+
+  <ng-template #noAngles>
+    <div class="muted">— No se encontró anglesImage —</div>
+  </ng-template>
+</section>
+
+    <!-- Derecha: resumen -->
+    <section class="card panel">
+      <div class="panel__title">Resumen</div>
+
+      <table class="kvTable">
+        <tr *ngFor="let r of vm.stage4Rows">
+          <td [class.muted]="r.muted">{{ r.label }}</td>
+          <td [class.mono]="r.mono">{{ r.value }}</td>
+        </tr>
+      </table>
+
+      <div class="muted small" style="margin-top: 10px">
+        Cálculos: ΔH = (Dcon − Dsin)/2; v_calc = ΔH / 100 s; H100 = Espesor H − ΔH.
+      </div>
+    </section>
+  </div>
+
+  <!-- GALERÍA -->
+ <section class="card panel" style="margin-top: 14px">
+  <div class="panel__title">Wear image</div>
+
+  <ng-container *ngIf="vm.stage4WearImage as img; else noWearImg">
+    <div class="imgCard" (click)="openPreview(img, 'Etapa 4 · Wear image')">
+      <img [src]="toAssetUrl(img) ?? img" alt="wearImage" />
+      <div class="caption">Click para ampliar.</div>
+    </div>
+  </ng-container>
+
+  <ng-template #noWearImg>
+    <div class="muted">— No hay wearImage definida —</div>
+  </ng-template>
+</section>
+</div>
+<div *ngSwitchCase="'stage5'">
+  <div class="panel__title">Etapa 5 · Producción</div>
+
+  <!-- VIDEO -->
+  <ng-container *ngIf="asYouTubeEmbed(vm.stage5Video) as yt; else noStage5Video">
+    <div class="videoWrap" style="margin-bottom: 16px">
+      <iframe
+        [src]="yt"
+        title="Breakage video"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </ng-container>
+
+  <ng-template #noStage5Video>
+    <div class="muted">— No hay video definido para Etapa 5 —</div>
+  </ng-template>
+
+  <!-- IMAGEN + RESUMEN -->
+  <div class="stage2Grid">
+    <!-- Izquierda: anglesImage -->
+    <section class="card panel">
+      <div class="panel__title">Imagen DEM (anglesImage)</div>
+
+      <ng-container *ngIf="vm.stage5MainImage as img; else noStage5Img">
+        <div class="imgCard" (click)="openPreview(img,'Etapa 5 · anglesImage')">
+          <img [src]="toAssetUrl(img) ?? img" alt="anglesImage" />
+          <div class="caption">Click para ampliar.</div>
+        </div>
+      </ng-container>
+
+      <ng-template #noStage5Img>
+        <div class="muted">— No se encontró anglesImage —</div>
+      </ng-template>
+    </section>
+
+    <!-- Derecha: resumen -->
+    <section class="card panel">
+      <div class="panel__title">Resumen</div>
+
+      <table class="kvTable">
+        <tr *ngFor="let r of vm.stage5Rows">
+          <td class="muted">{{ r.label }}</td>
+          <td class="mono">{{ r.value }}</td>
+        </tr>
+      </table>
+      <!-- Nota metodológica -->
+<div class="method-note">
+  <span class="icon">ℹ️</span>
+  <span>
+    <strong>Nota metodológica:</strong>
+    La capacidad procesada (t/h) fue estimada a partir de la masa obtenida en la simulación DEM, aplicando factores de calibración y escala.
+    El valor de P80 fue determinado mediante interpolación lineal a partir de la distribución granulométrica acumulada.
+    El procedimiento detallado se presenta en el anexo metodológico de la tesis.
+  </span>
+</div>
+    </section>
+  </div>
+
+  <!-- GALERÍA etapa 5 -->
+  <section class="card panel" style="margin-top: 14px">
+    <div class="panel__title">Imágenes adicionales · Etapa 5</div>
+
+    <div class="stage2Gallery" *ngIf="vm.stage5ExtraImages?.length; else noStage5Imgs">
+      <div
+        class="stage2Thumb"
+        *ngFor="let it of vm.stage5ExtraImages"
+        (click)="openPreview(it.src, 'Etapa 5 · ' + it.label)"
+      >
+        <img [src]="toAssetUrl(it.src) ?? it.src" [alt]="it.label" />
+        <div class="caption">{{ it.label }}</div>
+      </div>
+    </div>
+
+    <ng-template #noStage5Imgs>
+      <div class="muted">— No hay imágenes adicionales definidas —</div>
+    </ng-template>
+  </section>
+</div>
+         <div *ngSwitchCase="'stage6'">
+  <div class="panel__title">Etapa 6 · Integración</div>
+
+  <div class="stage2Grid">
+    <!-- Izquierda: anglesImage -->
+    <section class="card panel">
+      <div class="panel__title">Imagen DEM (anglesImage)</div>
+
+      <ng-container *ngIf="vm.stage5MainImage as img; else noImg6">
+        <div class="imgCard" (click)="openPreview(img,'Etapa 6 · anglesImage')">
+          <img [src]="toAssetUrl(img) ?? img" alt="anglesImage" />
+          <div class="caption">Click para ampliar.</div>
+        </div>
+      </ng-container>
+
+      <ng-template #noImg6>
+        <div class="muted">— No se encontró anglesImage —</div>
+      </ng-template>
+      <!-- Debajo de la imagen -->
+<div class="method-note" style="margin-top: 12px">
+  <span class="icon">ℹ️</span>
+  <span>
+    <strong>Nota metodológica:</strong>
+    El indicador global IG combina el desempeño de desgaste y producción mediante una suma ponderada de indicadores adimensionales.
+    Los pesos priorizan la reducción de la velocidad de desgaste y el mantenimiento de una alta capacidad.
+    La formulación completa se documenta en el anexo metodológico de la tesis.
+  </span>
+</div>
+    </section>
+
+    <!-- Derecha: resumen integrado -->
+    <section class="card panel">
+      <div class="panel__title">Resumen integrado</div>
+
+      <table class="kvTable">
+        <tr
+          *ngFor="let r of vm.stage6Rows"
+          [class.rowHighlight]="r.label === 'Indicador global' || r.label === 'Resultado'"
+        >
+          <td class="muted">{{ r.label }}</td>
+
+          <td class="mono" [class.valueStrong]="r.label === 'Indicador global'">
+            <ng-container *ngIf="r.label === 'Resultado'; else normal6">
+              <span
+                class="badgeResult"
+                [class.badgeWinner]="r.value === 'Ganador final'"
+                [class.badgeBase]="r.value === 'Caso base (continúa)'"
+                [class.badgeNoWinner]="r.value === 'No ganador'"
+              >
+                {{ r.value }}
+              </span>
+            </ng-container>
+
+            <ng-template #normal6>{{ r.value }}</ng-template>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Pesos + fórmula -->
+      <div class="formulaBox" style="margin-top: 12px">
+        <div class="muted" style="margin-bottom: 6px"><strong>Pesos</strong></div>
+        <div class="weightsRow">
+          <span *ngFor="let w of vm.stage6Weights" class="weightPill">
+            {{ w.key }} = {{ w.value }}
+          </span>
+        </div>
+
+
+
+      </div>
+
+    </section>
+
+  </div>
+ <section class="card panel formulaFull" style="margin-top: 14px">
+  <div class="panel__title">Indicador global</div>
+
+  <div class="formulaPretty formulaPretty--full" aria-label="Fórmula del indicador global">
+    <span class="ig">IG</span>
+    <span class="eq">=</span>
+
+    <span class="term">
+      <span class="w">w<sub>desg</sub></span>
+      <span class="mul">·</span>
+      <span class="i">I<sub>desg</sub></span>
+    </span>
+
+    <span class="plus">+</span>
+
+    <span class="term">
+      <span class="w">w<sub>T</sub></span>
+      <span class="mul">·</span>
+      <span class="i">I<sub>T</sub></span>
+    </span>
+
+    <span class="plus">+</span>
+
+    <span class="term">
+      <span class="w">w<sub>P80</sub></span>
+      <span class="mul">·</span>
+      <span class="i">I<sub>P80</sub></span>
+    </span>
+
+    <span class="plus">+</span>
+
+    <span class="term">
+      <span class="w">w<sub>Ecs</sub></span>
+      <span class="mul">·</span>
+      <span class="i">I<sub>Ecs</sub></span>
+    </span>
+  </div>
+</section>
+
+</div>
+
+          <div *ngSwitchDefault class="muted">
+            Contenido de la etapa en construcción.
+          </div>
+        </ng-container>
+      </section>
+    </div>
+
+    <div class="imgModal" *ngIf="(preview$ | async) as p" (click)="closePreview()">
+      <div class="imgModal__panel" (click)="$event.stopPropagation()">
+        <div class="imgModal__top">
+          <div class="imgModal__title">{{ p.title }}</div>
+          <button class="imgModal__close" type="button" (click)="closePreview()">✕</button>
+        </div>
+        <div class="imgModal__body">
+          <img [src]="p.img" alt="Vista previa" />
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

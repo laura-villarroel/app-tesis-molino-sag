@@ -1,0 +1,31 @@
+<header class="topbar">
+  <div class="container topbar__inner">
+
+ <a class="brand" routerLink="/" aria-label="Ir a inicio">
+  <img class="brand__logo" src="/assets/branding/sag_icon_2.svg" alt="SAG" />
+  <span class="brand__divider" aria-hidden="true"></span>
+  <div class="brand__text">
+    <div class="brand__kicker">Asistente de Operación</div>
+    <div class="brand__title">Molino SAG</div>
+  </div>
+</a>
+
+
+    <nav class="nav" aria-label="Navegación principal">
+      <a
+        *ngFor="let item of nav"
+        class="nav__link"
+        [routerLink]="item.path"
+        routerLinkActive="is-active"
+        [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+      >
+        {{ item.label }}
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main class="container page">
+  <router-outlet />
+</main>
+<app-footer></app-footer>

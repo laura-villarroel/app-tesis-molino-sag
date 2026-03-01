@@ -1,0 +1,123 @@
+
+<section class="hero hero--visual">
+  <div class="hero__bg" aria-hidden="true">
+  <img [src]="heroImageSrc" alt="" />
+</div>
+
+  <div class="hero__content">
+    <h1 class="hero__title">
+      Asistente de Operación · <span>Molino SAG</span>
+    </h1>
+
+    <p class="hero__subtitle">
+      Herramienta de apoyo a la decisión basada en simulaciones DEM & FEM.
+      Recomienda condiciones óptimas según el estado de desgaste del molino.
+    </p>
+
+    <div class="hero__chips">
+      <span class="chip">Basado en 40+ simulaciones Rocky DEM</span>
+      <span class="chip">Validado con ANSYS Mechanical (FEM)</span>
+    </div>
+
+    <div class="hero__cta">
+      <a class="cta-btn cta-btn--green" routerLink="/decision">
+        <span class="cta-btn__icon" aria-hidden="true">
+
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+            <path
+              d="M12 15.25a3.25 3.25 0 1 0 0-6.5 3.25 3.25 0 0 0 0 6.5Z"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            />
+            <path
+              d="M19.4 13.5a7.9 7.9 0 0 0 .05-1.5 7.9 7.9 0 0 0-.05-1.5l2-1.55a.75.75 0 0 0 .18-.95l-1.9-3.29a.75.75 0 0 0-.91-.34l-2.35.95a7.8 7.8 0 0 0-2.6-1.5l-.36-2.5A.75.75 0 0 0 12.7.75h-3.4a.75.75 0 0 0-.74.62l-.36 2.5a7.8 7.8 0 0 0-2.6 1.5l-2.35-.95a.75.75 0 0 0-.91.34L.44 8.05a.75.75 0 0 0 .18.95l2 1.55A7.9 7.9 0 0 0 2.57 12c0 .51.02 1.01.05 1.5l-2 1.55a.75.75 0 0 0-.18.95l1.9 3.29c.19.33.6.47.95.34l2.35-.95c.78.64 1.66 1.14 2.6 1.5l.36 2.5c.05.36.36.62.74.62h3.4c.37 0 .69-.27.74-.63l.36-2.49c.94-.36 1.82-.86 2.6-1.5l2.35.95c.35.13.76-.01.95-.34l1.9-3.29a.75.75 0 0 0-.18-.95l-2-1.55Z"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            />
+          </svg>
+        </span>
+        Usar herramienta de decisión
+      </a>
+
+      <a class="cta-btn" routerLink="/biblioteca">Ver biblioteca</a>
+      <a class="mini-link" routerLink="/procedimiento">Ver procedimiento</a>
+    </div>
+  </div>
+
+
+</section>
+
+<!-- KPIs -->
+<section class="kpis kpis--classic">
+  <div class="kpi card" *ngFor="let k of kpis">
+
+    <div class="kpi__title-row">
+      <div class="kpi__title">{{ k.title }}</div>
+
+      <div class="kpi__icon" aria-hidden="true">
+        <ng-container [ngSwitch]="true">
+          <span *ngSwitchCase="k.title.toLowerCase().includes('fem')">🧩</span>
+          <span *ngSwitchCase="k.title.toLowerCase().includes('dem')">⚙️</span>
+          <span *ngSwitchCase="k.title.toLowerCase().includes('ganadores')">🏆</span>
+          <span *ngSwitchCase="k.title.toLowerCase().includes('videos')">🎥</span>
+          <span *ngSwitchDefault>📊</span>
+        </ng-container>
+      </div>
+    </div>
+
+
+    <div class="kpi__value">{{ k.value }}</div>
+
+    <div class="kpi__subtitle">{{ k.subtitle }}</div>
+  </div>
+</section>
+
+
+
+<section class="method card">
+  <div class="method__head">
+    <div>
+      <h2 class="method__title">Resumen metodológico</h2>
+      <p class="method__subtitle">
+        Flujo de trabajo desde la base geométrica hasta la selección final (un escenario recomendado por estado E1–E5).
+      </p>
+    </div>
+
+    <div class="method__actions">
+      <a class="mini-link" routerLink="/procedimiento">Ver procedimiento</a>
+
+    </div>
+  </div>
+
+  <ol class="steps">
+    <li *ngFor="let s of methodologySteps">
+      <div class="steps__t">{{ s.title }}</div>
+      <div class="steps__d">{{ s.desc }}</div>
+    </li>
+  </ol>
+</section>
+
+
+<section class="winners card">
+  <div class="winners__head">
+    <div>
+      <h2 class="winners__title">Escenarios recomendados finales (Etapa 6)</h2>
+      <p class="winners__subtitle">
+        Selección final basada en indicadores de las etapas 4 y 5. Un escenario óptimo por estado.
+      </p>
+    </div>
+
+    <a class="cta-btn cta-btn--green" routerLink="/biblioteca">Ver resultados</a>
+  </div>
+
+  <div class="winners__grid">
+    <a
+      class="winner"
+      *ngFor="let w of winners"
+      [routerLink]="['/escenario', w.scenario]"
+      title="Abrir carta del escenario"
+    >
+      <div class="winner__state">{{ w.state }}</div>
+      <div class="winner__scenario">{{ w.scenario }}</div>
+      <div class="winner__hint">Ver carta</div>
+    </a>
+  </div>
+</section>

@@ -1,0 +1,125 @@
+
+<app-page-hero
+  title="Acerca de"
+  [subtitle]="'Herramienta de decisión para operación de Molino SAG y resumen técnico de resultados (DEM + FEM).' "
+  [imgSrc]="heroImage"
+  [actions]="heroActions"
+  [chips]="heroChips"
+  [imgScale]="1.06"
+  [imgPosX]="92"
+  [imgPosY]="52"
+>
+</app-page-hero>
+
+<section class="about">
+
+  <div class="about__inner">
+
+    <!-- TARJETA TESIS -->
+    <article class="card card--wide">
+      <header class="thesisHead">
+        <div class="thesisHead__left">
+          <div class="thesisBadge">
+            <span class="pill">Tesis</span>
+            <img class="pucpLogo" [src]="pucpLogo" alt="PUCP" />
+          </div>
+
+          <h2 class="thesisTitle">{{ thesisTitle }}</h2>
+
+          <p class="p">{{ justification }}</p>
+
+          <div class="callout">
+            <div class="callout__k">Impacto operacional</div>
+            <div class="callout__v">≈ US$ 100.000 por hora de detención</div>
+            <div class="callout__s">Costo referencial por indisponibilidad del equipo.</div>
+          </div>
+        </div>
+
+        <div class="thesisHead__right">
+          <a class="btn btn--cta" [href]="thesisPdf" target="_blank" rel="noopener">
+            Descargar tesis (PDF)
+          </a>
+        </div>
+      </header>
+
+      <!--  METADATA -->
+      <div class="metaGrid">
+       <div class="meta meta--author">
+  <div class="meta__k">Autora</div>
+  <div class="meta__v">{{ author }}</div>
+
+  <a class="authorLink" [href]="linkedin" target="_blank" rel="noopener" aria-label="LinkedIn">
+    <span class="liIcon" aria-hidden="true">in</span>
+    <span class="authorLink__txt">LinkedIn</span>
+  </a>
+</div>
+
+
+        <div class="meta">
+          <div class="meta__k">Asesor</div>
+          <div class="meta__v">{{ advisor }}</div>
+        </div>
+
+        <div class="meta meta--inst">
+          <div class="meta__top">
+            <div>
+              <div class="meta__k">Institución</div>
+              <div class="meta__v">Pontificia Universidad Católica del Perú (PUCP)</div>
+              <div class="meta__s">Escuela de Posgrado · Ingeniería Mecánica</div>
+            </div>
+
+            <img class="metaLogo" [src]="pucpLogo" alt="PUCP" />
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!--  GRID PRINCIPAL -->
+<div class="grid2">
+  <article class="card">
+    <div class="card__title">Qué hace la herramienta</div>
+    <ul class="list">
+      <li *ngFor="let it of whatDoesAppDo">{{ it }}</li>
+    </ul>
+
+    <div class="note note--soft">
+      {{ evidenceText }}
+    </div>
+  </article>
+
+  <div class="stack">
+    <article class="card">
+      <div class="card__title">Alcance</div>
+      <p class="p">{{ scope }}</p>
+    </article>
+
+    <article class="card">
+      <div class="card__title">Limitaciones</div>
+      <ul class="list">
+        <li *ngFor="let it of limitations">{{ it }}</li>
+      </ul>
+    </article>
+  </div>
+</div>
+
+    <!--  METODOLOGÍA / ETAPAS -->
+    <article class="card card--wide">
+      <div class="card__head">
+        <div>
+          <div class="card__title">Metodología (resumen por etapas)</div>
+          <div class="muted">
+            Organización de resultados y evidencia técnica en 6 etapas del estudio.
+          </div>
+        </div>
+      </div>
+
+      <div class="stageGrid">
+        <div class="stage" *ngFor="let s of stages">
+          <div class="stage__k">{{ s.k }}</div>
+          <div class="stage__v">{{ s.v }}</div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>

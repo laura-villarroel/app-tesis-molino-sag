@@ -1,0 +1,54 @@
+<section
+  class="page-hero"
+  [style.--img-scale]="imgScale"
+  [style.--img-pos-x.%]="imgPosX"
+  [style.--img-pos-y.%]="imgPosY"
+>
+  <div class="hero__bg" *ngIf="imgSrc" aria-hidden="true">
+    <img [src]="imgSrc" [alt]="imgAlt" />
+  </div>
+
+  <div class="hero__content">
+    <h1 class="hero__title">
+      {{ title }}
+      <ng-container *ngIf="highlight">
+        · <span class="hero__hl">{{ highlight }}</span>
+      </ng-container>
+    </h1>
+
+    <p class="hero__subtitle" *ngIf="subtitle">{{ subtitle }}</p>
+
+    <div class="hero__chips" *ngIf="chips?.length">
+      <span class="chip" *ngFor="let c of chips">{{ c }}</span>
+    </div>
+
+    <div class="hero__actions" *ngIf="actions?.length">
+      <ng-container *ngFor="let a of actions">
+
+        <a
+          *ngIf="!isExternal(a)"
+          class="btn"
+          [class.btn--cta]="a.variant === 'cta'"
+          [class.btn--ghost]="a.variant === 'ghost'"
+          [routerLink]="a.link"
+        >
+          {{ a.label }}
+        </a>
+
+
+        <a
+          *ngIf="isExternal(a)"
+          class="btn"
+          [class.btn--cta]="a.variant === 'cta'"
+          [class.btn--ghost]="a.variant === 'ghost'"
+          [attr.href]="hrefFor(a)"
+          [attr.download]="a.download || null"
+          [attr.target]="a.targetBlank ? '_blank' : null"
+          [attr.rel]="a.targetBlank ? 'noopener noreferrer' : null"
+        >
+          {{ a.label }}
+        </a>
+      </ng-container>
+    </div>
+  </div>
+</section>

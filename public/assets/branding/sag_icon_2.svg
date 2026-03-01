@@ -1,0 +1,23 @@
+<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+ <g>
+  <title>Layer 1</title>
+  <g stroke="null" id="svg_2">
+   <g stroke="null" id="svg_3">
+    <g stroke="#E5E7EB" id="svg_4" fill="none" class="line" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+     <circle stroke="null" id="svg_5" cx="50.18761" cy="50" r="36.46972"/>
+     <path stroke="null" id="svg_6" d="m50.18761,6l0,10m0,68l0,10m-43.3694,-44l9.85668,0m67.02543,0l9.85668,0"/>
+     <path stroke="null" id="svg_7" d="m18.64623,18l6.89968,7m49.28341,50l6.89968,7m-63.08276,0l6.89968,-7m49.28341,-50l6.89968,-7"/>
+    </g>
+    <g stroke="null" id="svg_8" fill="#E5E7EB">
+     <path stroke="null" id="svg_9" d="m50.18761,28l25.62737,10l-25.62737,10l-25.62737,-10l25.62737,-10z"/>
+     <path stroke="null" id="svg_10" d="m42.30226,48l15.77069,0l0,10c0,2 -1.57707,3.5 -3.44984,3.5l-8.87101,0c-1.87277,0 -3.44984,-1.5 -3.44984,-3.5l0,-10z"/>
+     <path stroke="#E5E7EB" id="svg_11" d="m75.81498,38l0,22" fill="none" stroke-width="4" stroke-linecap="round"/>
+     <circle stroke="null" id="svg_12" cx="75.81498" cy="62" r="3.15414"/>
+    </g>
+   </g>
+   <text transform="matrix(0.985668 0 0 1 1.73155 0)" stroke="null" id="svg_13" x="117.16062" y="56" class="title" font="700 40px Arial, Helvetica, sans-serif" fill="#E5E7EB">SAG Decision Dashboard</text>
+   <text transform="matrix(0.985668 0 0 1 1.73155 0)" stroke="null" id="svg_14" x="117.16062" y="90" class="sub" font="500 16px Arial, Helvetica, sans-serif" fill="rgba(229,231,235,.75)" letter-spacing="0.2px">Academic Thesis Tool • DEM (Rocky) + FEM (ANSYS) + Morrell/Tavares</text>
+  </g>
+ </g>
+
+</svg>

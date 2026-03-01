@@ -1,0 +1,831 @@
+<app-page-hero
+  title="Procedimiento"
+  [subtitle]="'Trazabilidad metodológica desde la base geométrica hasta la selección final (E1–E5).'"
+  [imgSrc]="'/assets/branding/molino-sag-v2.png'"
+  [actions]="heroActions"
+  [chips]="['Basado en 40+ simulaciones Rocky DEM', 'Validado con ANSYS Mechanical (FEM)']"
+  [imgScale]="1.05"
+  [imgPosX]="92"
+  [imgPosY]="45"
+></app-page-hero>
+
+<section class="proc">
+
+  <section class="kpis kpis--classic">
+    <div class="kpi card" *ngFor="let k of kpis(); trackBy: trackKpi">
+      <div class="kpi__title-row">
+        <div class="kpi__title">{{ k.title }}</div>
+
+        <div class="kpi__icon" aria-hidden="true">
+          <ng-container [ngSwitch]="true">
+            <span *ngSwitchCase="k.title.toLowerCase().includes('fem')">🧩</span>
+            <span *ngSwitchCase="k.title.toLowerCase().includes('dem')">⚙️</span>
+            <span *ngSwitchCase="k.title.toLowerCase().includes('ganadores')">🏆</span>
+            <span *ngSwitchDefault>📊</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="kpi__value">{{ k.value }}</div>
+      <div class="kpi__subtitle">{{ k.subtitle }}</div>
+    </div>
+  </section>
+
+  <div class="panel">
+    <div class="panelTop">
+      <h2 class="h2">Procedimiento por etapas</h2>
+      <div class="meta">Trazabilidad metodológica de la tesis</div>
+    </div>
+
+    <div class="tabs">
+      <button
+        class="tab"
+        *ngFor="let t of stageTabs"
+        (click)="setStage(t.key)"
+        [class.isOn]="stage() === t.key"
+        type="button"
+      >
+        <div class="tab__k">{{ t.title }}</div>
+        <div class="tab__s">{{ t.sub }}</div>
+      </button>
+    </div>
+
+    <div class="stageContent" id="stageTop">
+      <!-- ETAPA 1 -->
+      <ng-container *ngIf="stage() === 1">
+        <div class="stageHead">
+          <h3 class="h3">Etapa 1 · Simulación con desgaste activo</h3>
+          <p class="p">
+            Los tiempos Δt corresponden al tramo desde el estado anterior (E1→E2, E2→E3, ...).
+            El acumulado alcanza el tiempo total del escenario (6 meses para E1→E5).
+          </p>
+        </div>
+
+        <div class="stageGrid">
+
+          <div class="videoCard">
+            <div class="videoTitle">Video representativo</div>
+
+            <div class="videoWrap" *ngIf="stage1EmbedUrl(); else noVideo">
+              <iframe
+                [src]="stage1EmbedUrl()!"
+                title="Etapa 1 - Video"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+
+            <ng-template #noVideo>
+              <div class="noVideo">No hay video configurado para este escenario.</div>
+            </ng-template>
+
+            <div class="small" *ngIf="stage1Item() as s1">
+              Escenario base: <span class="mono">{{ s1.scenarioId }}</span>
+              <span *ngIf="s1.totalTime_months">· {{ s1.totalTime_months }} meses</span>
+            </div>
+
+            <div class="transTableWrap" *ngIf="stage1Summary().length">
+              <div class="transNote">
+                <b>Nota:</b> Δt es el tiempo desde el estado anterior. El acumulado llega a
+                <b>{{ stage1Item()?.totalTime_months ?? 6 }}</b> meses (E1→E5).
+              </div>
+
+              <table class="transTable">
+                <thead>
+                  <tr>
+                    <th>Estado</th>
+                    <th>ΔH (mm)</th>
+                    <th>v (mm/h)</th>
+                    <th>Δt (meses)</th>
+                    <th>t acumulado (meses)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let r of stage1Summary()">
+                 <td>
+  <span class="stateTag" [attr.data-state]="r.state">{{ r.state }}</span>
+</td>
+
+                    <td>{{ r.dH_mm }}</td>
+                    <td>{{ r.v_mm_h }}</td>
+                    <td>{{ r.deltaMonths | number:'1.2-2' }}</td>
+                    <td>{{ r.accMonths | number:'1.2-2' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="statesCard">
+            <div class="statesTitle">Estados derivados (E1–E5)</div>
+
+            <div class="statesGrid">
+           <article
+  class="stateTile"
+  *ngFor="let s of stage1States()"
+  (click)="openPreview(s.img, s.state + ' · ' + (s.wearPct ?? '') + '%')"
+  role="button"
+  tabindex="0"
+>
+                <div class="stateTile__img">
+                  <img [src]="s.img" (error)="imgFallback($event)" alt="Estado {{ s.state }}" />
+                </div>
+
+                <div class="stateTile__foot">
+                  <div class="statePill" [class.isE1]="s.state==='E1'" [class.isE2]="s.state==='E2'"
+  [class.isE3]="s.state==='E3'" [class.isE4]="s.state==='E4'" [class.isE5]="s.state==='E5'">
+  {{ s.state }}
+</div>
+
+                  <div class="stateLabel">
+                    <span *ngIf="s.wearPct !== null">{{ s.wearPct }}%</span>
+                    <span class="dot">·</span> ΔH {{ s.dH_mm }} mm
+                    <span class="dot">·</span> v {{ s.v_mm_h }} mm/h
+                    <ng-container *ngIf="s.state !== 'E1'">
+  <span class="dot">·</span> Δt {{ s.t_months }} meses
+</ng-container>
+
+                  </div>
+                </div>
+              </article>
+            </div>
+
+
+          </div>
+        </div>
+<div class="imgModal" *ngIf="previewImg()" (click)="closePreview()">
+  <div class="imgModal__panel" (click)="$event.stopPropagation()">
+    <div class="imgModal__top">
+      <div class="imgModal__title">{{ previewTitle() }}</div>
+      <button class="imgModal__close" type="button" (click)="closePreview()">✕</button>
+    </div>
+
+    <div class="imgModal__body">
+      <img [src]="previewImg()!" alt="Vista previa" />
+    </div>
+  </div>
+</div>
+
+      </ng-container>
+  <!-- ETAPA 2 -->
+<ng-container *ngIf="stage() === 2">
+  <div class="card block">
+  <div class="cardTitle">Video representativo (caso base: E1-V4-L2)</div>
+
+  <ng-container *ngIf="stage2BaseVideo() as v; else noVid2">
+    <div class="videoFrame">
+      <iframe
+        [src]="asYouTubeEmbed(v)"
+        title="Etapa 2 — Video caso base"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+    <div class="muted">Fuente: simulación DEM sin rotura (Etapa 2).</div>
+  </ng-container>
+
+  <ng-template #noVid2>
+    <div class="muted">No hay video configurado para el caso base en Etapa 2.</div>
+  </ng-template>
+</div>
+
+  <div class="stageHead">
+    <h3 class="h3">Etapa 2 · Clasificación preliminar DEM</h3>
+    <p class="p">
+      Se evaluaron 31 escenarios combinando estado (E1–E5), velocidad (V1–V5) y llenado (L1–L6).
+      Los indicadores parciales se normalizan entre 0 y 1 y se integran en un indicador global
+      para seleccionar 2 ganadores por estado.
+    </p>
+  </div>
+
+  <!-- DEFINICIÓN MATRIZ -->
+  <div class="matrixBlock">
+    <div class="matrixBlock__title">Definición de la matriz de escenarios</div>
+
+    <div class="matrixGrid">
+      <div class="matrixCard">
+        <div class="matrixCard__title">Estados de desgaste</div>
+        <div class="wearGrid">
+  <div class="wearItem isE1">
+    <div class="wearItem__k">E1</div>
+    <div class="wearItem__v">0% desgaste</div>
+    <div class="wearItem__s">H ≈ 229 mm</div>
+  </div>
+
+  <div class="wearItem isE2">
+    <div class="wearItem__k">E2</div>
+    <div class="wearItem__v">25% desgaste</div>
+    <div class="wearItem__s">H ≈ 184.5 mm</div>
+  </div>
+
+  <div class="wearItem isE3">
+    <div class="wearItem__k">E3</div>
+    <div class="wearItem__v">50% desgaste</div>
+    <div class="wearItem__s">H ≈ 140 mm</div>
+  </div>
+
+  <div class="wearItem isE4">
+    <div class="wearItem__k">E4</div>
+    <div class="wearItem__v">75% desgaste</div>
+    <div class="wearItem__s">H ≈ 95.5 mm</div>
+  </div>
+
+  <div class="wearItem isE5">
+    <div class="wearItem__k">E5</div>
+    <div class="wearItem__v">100% desgaste</div>
+    <div class="wearItem__s">H ≈ 51 mm</div>
+  </div>
+</div>
+
+      </div>
+
+      <div class="matrixCard">
+        <div class="matrixCard__title">Velocidad de giro (%Nc)</div>
+        <div class="chipsRow">
+          <span class="chip">V1 · 60%</span>
+          <span class="chip">V2 · 65%</span>
+          <span class="chip">V3 · 70%</span>
+          <span class="chip">V4 · 75%</span>
+          <span class="chip">V5 · 80%</span>
+        </div>
+      </div>
+
+      <div class="matrixCard">
+        <div class="matrixCard__title">Nivel de llenado (%V)</div>
+        <div class="chipsRow">
+          <span class="chip">L1 · 20%</span>
+          <span class="chip">L2 · 25%</span>
+          <span class="chip">L3 · 30%</span>
+          <span class="chip">L4 · 35%</span>
+          <span class="chip">L5 · 40%</span>
+          <span class="chip">L6 · 45%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ECUACIÓN GLOBAL -->
+  <div class="equationBlock">
+    <div class="equationBlock__title">Indicador global</div>
+    <div class="equation">
+      I<sub>global</sub> =
+      0.30 I<sub>tray</sub> +
+      0.30 I<sub>rot</sub> +
+      0.20 I<sub>liner</sub> +
+      0.20 I<sub>pot</sub>
+    </div>
+    <div class="equationNote">
+      Indicadores normalizados entre 0 y 1. Mayor valor indica mejor desempeño operacional.
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="callouts">
+    <div class="callout">
+      <div class="callout__k">Escenarios evaluados</div>
+      <div class="callout__v">{{ totalDem() }}</div>
+    </div>
+
+    <div class="callout">
+      <div class="callout__k">Ganadores Etapa 2</div>
+      <div class="callout__v">{{ stage2Winners().size }}</div>
+    </div>
+  </div>
+
+  <!-- TABLA RANKING -->
+ <div class="rankingTableWrap">
+  <div class="rankingTitle">Ranking por indicador global</div>
+
+  <table class="rankingTable">
+    <thead>
+      <tr>
+        <th>Escenario</th>
+        <th>Imagen</th>
+        <th>Iglobal</th>
+        <th>Itray</th>
+        <th>Irot</th>
+        <th>Iliner</th>
+        <th>Ipot</th>
+   <th>Resultado</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr
+  *ngFor="let r of stage2RowsOrdered()"
+  class="rowClickable"
+  (click)="goToScenario(r.scenarioId)"
+>
+
+        <td class="tScenario">
+  <span class="scenarioLink">{{ r.scenarioId }}</span>
+</td>
+
+        <td class="tImg">
+          <button
+            class="thumbBtn"
+  type="button"
+  (click)="$event.stopPropagation(); openPreview(r.anglesImage, r.scenarioId)"
+            [disabled]="!r.anglesImage"
+            title="Ver imagen"
+          >
+            <img
+              *ngIf="r.anglesImage"
+              [src]="r.anglesImage"
+              [alt]="'Angles ' + r.scenarioId"
+              loading="lazy"
+              (error)="imgFallback($event)"
+            />
+            <span *ngIf="!r.anglesImage" class="thumbEmpty">—</span>
+          </button>
+        </td>
+
+        <td class="bold">{{ r.indGlobal | number:'1.2-2' }}</td>
+        <td>{{ r.indTray | number:'1.2-2' }}</td>
+        <td>{{ r.indRotura | number:'1.2-2' }}</td>
+        <td>{{ r.indLiner | number:'1.2-2' }}</td>
+        <td>{{ r.indPot | number:'1.2-2' }}</td>
+
+      <td>
+  <span class="pill" [class.pill--win]="r.comment === 'ganador'">
+    {{ r.comment === 'ganador' ? 'Ganador' : 'Evaluado' }}
+  </span>
+</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+</ng-container>
+
+
+      <!-- ETAPA 3 -->
+<ng-container *ngIf="stage() === 3">
+
+  <h2 class="stageTitle">Etapa 3 · FEM (validación estructural)</h2>
+
+  <p class="stageLead">
+    Validación con ANSYS Mechanical. El FEM se usa como filtro/restricción de diseño (verificación estructural),
+    no como parte del índice global. Haz click en el escenario para abrir su carta.
+  </p>
+
+  <div class="infoCallout">
+    <div class="infoCallout__title">Criterio de seguridad (material AISI 4140)</div>
+    <div class="infoCallout__body">
+      Se adopta <b>σ<sub>y</sub> = {{ femYieldMPa }} MPa</b> como esfuerzo de fluencia de referencia.
+      El análisis FEM verifica que las tensiones equivalentes de von Mises se mantengan muy por debajo de este umbral,
+      actuando como filtro de seguridad.
+    </div>
+  </div>
+
+  <div class="stageHint">
+    <span>Tip:</span> Click en <b>Imagen</b> para ampliar · Click en <b>Escenario</b> para ir a <code>/escenario/:id</code>
+  </div>
+
+  <div class="tableWrap">
+    <table class="stageTable">
+      <thead>
+        <tr>
+          <th class="thScenario">Escenario</th>
+          <th class="thImg">Imagen</th>
+          <th>F_result-max (kN)</th>
+          <th>Pcont-max (MPa)</th>
+          <th>σVM-max (MPa)</th>
+          <th>Disp-max (μm)</th>
+          <th>U (mJ)</th>
+          <th>FS</th>
+          <th>Reac_result (kN)</th>
+          <th>ErrorF (%)</th>
+
+          <th *ngIf="hasStage3Comments()">Resultado/th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let r of stage3Rows(); trackBy: trackScenarioId">
+          <td class="tdScenario">
+            <button type="button" class="scenarioLink" (click)="goScenario(r.scenarioId)">
+              {{ r.scenarioId }}
+            </button>
+          </td>
+
+          <td class="tdImg">
+            <button
+              type="button"
+              class="thumbBtn"
+              (click)="openPreview(r.stressImg, r.scenarioId)"
+              [disabled]="!r.stressImg"
+              title="Ver imagen"
+            >
+              <img class="thumbImg" [src]="r.stressImg" [alt]="'FEM ' + r.scenarioId" />
+            </button>
+          </td>
+
+          <td>{{ r.fResultMax_kN ?? '—' }}</td>
+          <td>{{ r.pContMax_MPa ?? '—' }}</td>
+          <td>{{ r.sigmaVMMax_MPa ?? '—' }}</td>
+          <td>{{ r.dispMax_um ?? '—' }}</td>
+          <td>{{ r.u_mJ ?? '—' }}</td>
+          <td>{{ r.fs ?? '—' }}</td>
+          <td>{{ r.reacResult_kN ?? '—' }}</td>
+          <td>{{ r.errorF_pct ?? '—' }}</td>
+
+          <td *ngIf="hasStage3Comments()">{{ (r.comment || '—') }}</td>
+        </tr>
+
+       <tr *ngIf="!stage3Rows().length">
+          <td class="emptyRow" [attr.colspan]="hasStage3Comments() ? 11 : 10">
+            No hay datos FEM cargados (stage3.fem.json).
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</ng-container>
+
+
+
+
+
+
+      <!-- ETAPA 4 -->
+<ng-container *ngIf="stage() === 4">
+  <h2 class="stageH2">Etapa 4 · Desgaste (velocidad) — validación</h2>
+
+  <p class="stageP">
+    Simulación DEM sin rotura y con desgaste activo para cuantificar la velocidad de desgaste
+    <b>v<sub>desg</sub></b> en los 11 escenarios finalistas. Haz click en el escenario para abrir su carta
+    (<code>/escenario/:id</code>).
+  </p>
+
+  <p class="stageP">
+    <b>Definición:</b>
+    ΔH = (D<sub>in,100</sub> − D<sub>in,0</sub>)/2 &nbsp;y&nbsp;
+    v<sub>desg</sub> = ΔH/Δt (con Δt = 100 s).
+  </p>
+
+
+  <div class="card block">
+    <div class="cardTitle">Video representativo</div>
+
+    <ng-container *ngIf="stage4RepVideo() as v; else noVid4">
+      <div class="videoFrame">
+        <iframe
+          [src]="asYouTubeEmbed(v)"
+          title="Etapa 4 — Video"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <div class="muted">Fuente: simulación DEM con desgaste activo (Etapa 4).</div>
+    </ng-container>
+
+    <ng-template #noVid4>
+      <div class="muted">No hay video configurado para esta etapa.</div>
+    </ng-template>
+  </div>
+
+  <div class="card block">
+    <div class="cardTitle">Resumen v<sub>desg</sub> por escenario (11 casos)</div>
+
+    <div class="tableWrap tableWrap--noScrollX">
+      <table class="procTable">
+        <thead>
+          <tr>
+            <th>Escenario</th>
+            <th>Imagen</th>
+            <th>v<sub>desg</sub> (mm/s)</th>
+            <th>v<sub>desg</sub> (mm/h)</th>
+            <th>Ind. desgaste</th>
+            <th *ngIf="stage4HasComments()">Resultado</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let r of stage4Rows(); trackBy: trackScenarioIdStage4">
+            <td class="tdScenario">
+              <button type="button" class="scenarioLink" (click)="goScenario(r.scenarioId)">
+                {{ r.scenarioId }}
+              </button>
+            </td>
+
+            <td class="tdImg">
+              <button
+                type="button"
+                class="thumbBtn"
+                [disabled]="!r.wearImg"
+                (click)="openPreview(asAssetUrl(r.wearImg), r.scenarioId)"
+                title="Ver imagen">
+                <img *ngIf="r.wearImg" [src]="asAssetUrl(r.wearImg)" [alt]="r.scenarioId" />
+                <span *ngIf="!r.wearImg" class="muted">—</span>
+              </button>
+            </td>
+
+            <td>{{ r.vWear_mm_s ?? '—' }}</td>
+            <td>{{ r.vWear_mm_h ?? '—' }}</td>
+            <td>{{ r.indWear ?? '—' }}</td>
+<td>
+  <span class="pill" [class.pill--win]="r.comment === 'ganador'">
+    {{ r.comment === 'ganador' ? 'Ganador' : 'Evaluado' }}
+  </span>
+</td>
+          </tr>
+
+          <tr *ngIf="!stage4Rows().length">
+            <td [attr.colspan]="stage4HasComments() ? 6 : 5" class="muted">
+              No hay datos de Etapa 4 (stage45.performance.json).
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ng-container>
+
+<!-- ETAPA 5 -->
+<ng-container *ngIf="stage() === 5">
+  <h2 class="stageTitle">Etapa 5 · Rotura activa (DEM)</h2>
+
+  <p class="stageDesc">
+    Simulación DEM con <b>rotura activa</b>. Se reportan KPI productivos y energéticos.
+    La integración con desgaste e indicador global se realiza en <b>Etapa 6</b>.
+  </p>
+
+
+  <div class="card block">
+    <div class="cardTitle">Video representativo (caso base E1-V4-L2)</div>
+
+    <ng-container *ngIf="stage5RepVideo() as v; else noVid5">
+      <div class="videoFrame">
+        <iframe
+          [src]="asYouTubeEmbed(v)"
+          title="Etapa 5 — Video"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture;"
+          allowfullscreen
+        ></iframe>
+      </div>
+      <div class="muted">Fuente: simulación DEM con rotura activa (Etapa 5).</div>
+    </ng-container>
+
+    <ng-template #noVid5>
+      <div class="muted">No hay video configurado para esta etapa.</div>
+    </ng-template>
+  </div>
+
+  <div class="card block">
+    <div class="cardTitle">Resumen productivo + energético</div>
+
+    <div class="tableWrap noScrollX">
+      <table class="procTable">
+        <thead>
+          <tr>
+            <th>Escenario</th>
+            <th>Productos</th>
+            <th>Capacidad (t/h)</th>
+            <th>P80 (mm)</th>
+            <th>Potencia (kW)</th>
+            <th>Ecs (kWh/t)</th>
+            <th>Resultado</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let r of stage5Rows(); trackBy: trackScenarioId">
+            <td class="tdScenario">
+              <button type="button" class="scenarioLink" (click)="goScenario(r.scenarioId)">
+                {{ r.scenarioId }}
+              </button>
+            </td>
+
+            <td class="tdImg">
+              <button
+                type="button"
+                class="thumbBtn"
+                [disabled]="!r.productsImg"
+                (click)="openPreview(r.productsImg, r.scenarioId + ' · Productos')"
+                title="Ver productos"
+              >
+                <img *ngIf="r.productsImg" [src]="asAssetUrl(r.productsImg)" [alt]="r.scenarioId" />
+                <span *ngIf="!r.productsImg" class="muted">—</span>
+              </button>
+            </td>
+
+            <td>{{ r.capacity_tph ?? '—' }}</td>
+            <td>{{ r.p80_mm ?? '—' }}</td>
+            <td>{{ r.power_kW ?? '—' }}</td>
+            <td>{{ r.ecs_kWh_t ?? '—' }}</td>
+
+           <td>
+  <span class="pill" [class.pill--win]="r.isWinner">
+    {{ r.isWinner ? 'Ganador' : 'Evaluado' }}
+  </span>
+</td>
+          </tr>
+
+          <tr *ngIf="!stage5Rows().length">
+            <td colspan="7" class="muted">No hay datos de Etapa 5 (stage45.performance.json).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ng-container>
+<!-- ETAPA 6 -->
+<ng-container *ngIf="stage() === 6">
+  <h2 class="stageTitle">Etapa 6 · Indicador global y selección final</h2>
+
+  <p class="stageDesc">
+    Integración de resultados de <b>Etapa 4</b> (desgaste) y <b>Etapa 5</b> (productividad/energía) mediante el indicador global:
+  </p>
+<div class="igPanel">
+  <div class="igTop">
+    <div class="igTitle">Indicador global</div>
+
+    <div class="igEq">
+      I<sub>G</sub> =
+      {{ wDesg }} I<sub>desg</sub> +
+      {{ wT }} I<sub>T</sub> +
+      {{ wP80 }} I<sub>P80</sub> +
+      {{ wEcs }} I<sub>Ecs</sub>
+    </div>
+
+    <div class="igHint">
+      Indicadores normalizados entre 0 y 1. Mayor valor indica mejor desempeño integrado.
+    </div>
+  </div>
+ <div class="igStats">
+
+  <div class="igStatCard">
+    <div class="igStatLabel">Escenarios evaluados</div>
+    <div class="igStatValue">{{ stage6Evaluados() }}</div>
+  </div>
+
+  <div class="igStatCard">
+    <div class="igStatLabel">Ganadores (E1–E5)</div>
+    <div class="igStatValue">{{ stage6Ganadores() }}</div>
+  </div>
+
+</div>
+</div>
+
+
+
+  <div class="card block">
+    <div class="cardTitle">Resumen integrado (KPIs + indicadores + selección)</div>
+
+    <div class="tableWrap">
+      <table class="procTable">
+        <thead>
+          <tr>
+            <th>Escenario</th>
+            <th>Imagen (angles)</th>
+
+            <th>v<sub>desg</sub> (mm/h)</th>
+            <th>I<sub>desg</sub></th>
+
+            <th>Capacidad (t/h)</th>
+            <th>I<sub>T</sub></th>
+
+            <th>P80 (mm)</th>
+            <th>I<sub>P80</sub></th>
+
+            <th>Ecs (kWh/t)</th>
+            <th>I<sub>Ecs</sub></th>
+
+            <th>Ind. Global</th>
+            <th>Resultado</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let r of stage6Rows(); trackBy: trackScenarioId">
+            <td class="tdScenario">
+              <button type="button" class="scenarioLink" (click)="goScenario(r.scenarioId)">
+                {{ r.scenarioId }}
+              </button>
+            </td>
+
+            <td class="tdImg">
+              <button
+                type="button"
+                class="thumbBtn"
+                [disabled]="!r.anglesImg"
+                (click)="openPreview(r.anglesImg, r.scenarioId + ' · anglesImage')"
+                title="Ver anglesImage"
+              >
+                <img *ngIf="r.anglesImg" [src]="asAssetUrl(r.anglesImg)" [alt]="r.scenarioId" />
+                <span *ngIf="!r.anglesImg" class="muted">—</span>
+              </button>
+            </td>
+
+            <td>{{ r.vDesg_mm_h ?? '—' }}</td>
+            <td>{{ r.indDesg ?? '—' }}</td>
+
+            <td>{{ r.capacity_tph ?? '—' }}</td>
+            <td>{{ r.indT ?? '—' }}</td>
+
+            <td>{{ r.p80_mm ?? '—' }}</td>
+            <td>{{ r.indP80 ?? '—' }}</td>
+
+            <td>{{ r.ecs_kWh_t ?? '—' }}</td>
+            <td>{{ r.indEcs ?? '—' }}</td>
+
+            <td>{{ r.indGlobal ?? '—' }}</td>
+
+           <td>
+  <span class="pill" [class.pill--win]="r.isWinner">
+    {{ r.isWinner ? 'Ganador' : 'Evaluado' }}
+  </span>
+</td>
+          </tr>
+
+          <tr *ngIf="!stage6Rows().length">
+            <td colspan="12" class="muted">No hay datos integrados (stage45.performance / general).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Tabla adaptativa -->
+<div class="card block" style="margin-top: 14px;">
+  <div class="cardTitle">Estrategia adaptativa — transición entre estados</div>
+  <div class="muted" style="margin-top: 6px;">
+    Tabla de transición: tiempos por cambio de estado y total acumulado.
+  </div>
+
+  <div class="tableWrap" style="margin-top: 10px;">
+    <table class="procTable">
+      <thead>
+        <tr>
+          <th>Transición</th>
+          <th>Escenario</th>
+          <th>ΔH (mm)</th>
+          <th>v (mm/h)</th>
+          <th>t (meses)</th>
+          <th>t (meses, FS=0.72)</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let r of strategyTransitions(); trackBy: trackTransition">
+          <td>{{ r.transition }}</td>
+
+          <td class="tdScenario">
+            <button type="button" class="scenarioLink" (click)="goScenario(r.scenarioId)">
+              {{ r.scenarioId }}
+            </button>
+          </td>
+
+          <td>{{ r.deltaH_mm ?? '—' }}</td>
+          <td>{{ r.v_mm_h ?? '—' }}</td>
+          <td>{{ r.months ?? '—' }}</td>
+          <td>{{ r.monthsWithFS ?? '—' }}</td>
+        </tr>
+
+        <tr *ngIf="!strategyTransitions().length">
+          <td colspan="6" class="muted">No hay datos (strategy_adaptive.json).</td>
+        </tr>
+      </tbody>
+
+      <tfoot *ngIf="strategySummary() as s">
+        <tr>
+          <td colspan="4"><b>TOTAL</b></td>
+          <td><b>{{ s.months ?? '—' }}</b></td>
+          <td><b>{{ s.monthsWithFS ?? '—' }}</b></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- Resumen -->
+  <div class="strategyImpact" *ngIf="strategySummary() as s">
+    <div class="impactGrid">
+      <div class="impactCard">
+        <div class="impactLabel">Tiempo total (base)</div>
+        <div class="impactValue">{{ s.months ?? '—' }} <span class="impactUnit">meses</span></div>
+      </div>
+
+      <div class="impactCard">
+        <div class="impactLabel">Tiempo total (FS=0.72)</div>
+        <div class="impactValue">{{ s.monthsWithFS ?? '—' }} <span class="impactUnit">meses</span></div>
+      </div>
+
+      <div class="impactCard impactCard--highlight">
+        <div class="impactLabel">Reducción acumulada vs base</div>
+        <div class="impactValue">{{ s.additionalMonths ?? '—' }} <span class="impactUnit">meses</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</ng-container>
+
+    </div>
+  </div>
+</section>

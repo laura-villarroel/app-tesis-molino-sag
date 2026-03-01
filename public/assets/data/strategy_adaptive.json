@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.0",
+  "updatedAt": "2026-01-28",
+  "stage": "strategy",
+  "sheet": "ADAPTATIVA",
+  "summary": {
+    "months": 16.68,
+    "monthsWithFS": 12.01,
+    "additionalMonths": 6.01
+  },
+  "transitions": [
+    {
+      "transition": "E1→E2",
+      "scenarioId": "E1–V2–L2",
+      "dH_mm": 44.5,
+      "v_mm_h": 0.03,
+      "t_months": 2.4,
+      "t_months_fs": 1.72,
+      "additionalMonths_fs": null
+    },
+    {
+      "transition": "E2→E3",
+      "scenarioId": "E2–V2–L3",
+      "dH_mm": 44.5,
+      "v_mm_h": 0.02,
+      "t_months": 2.65,
+      "t_months_fs": 1.91,
+      "additionalMonths_fs": null
+    },
+    {
+      "transition": "E3→E4",
+      "scenarioId": "E3–V3–L4",
+      "dH_mm": 44.5,
+      "v_mm_h": 0.01,
+      "t_months": 5.17,
+      "t_months_fs": 3.72,
+      "additionalMonths_fs": null
+    },
+    {
+      "transition": "E4→E5",
+      "scenarioId": "E4–V3–L5",
+      "dH_mm": 44.5,
+      "v_mm_h": 0.01,
+      "t_months": 6.46,
+      "t_months_fs": 4.65,
+      "additionalMonths_fs": null
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+.box {
+  margin: 18px 0;
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.title {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.meta {
+  font-size: 13px;
+  line-height: 1.35;
+  margin-bottom: 8px;
+  opacity: 0.9;
+}
+
+.img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.thumb {
+  width: 120px;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid #eee;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.thumb2 {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid #eee;
+}
+
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.tbl th,
+.tbl td {
+  border: 1px solid #e8e8e8;
+  padding: 6px 8px;
+  vertical-align: top;
+}
+
+.error {
+  border: 1px solid #ffb3b3;
+  background: #fff3f3;
+  padding: 10px;
+  border-radius: 8px;
+}
