@@ -1,6 +1,10 @@
 <header class="topbar">
   <div class="container topbar__inner">
+<input id="navToggle" class="navToggle" type="checkbox" />
 
+<label class="navBtn" for="navToggle" aria-label="Abrir menú">
+  <span></span><span></span><span></span>
+</label>
  <a class="brand" routerLink="/" aria-label="Ir a inicio">
   <img class="brand__logo" src="assets/branding/sag_icon_2.svg" alt="SAG" />
   <span class="brand__divider" aria-hidden="true"></span>
@@ -11,7 +15,7 @@
 </a>
 
 
-    <nav class="nav" aria-label="Navegación principal">
+   <nav class="nav navDrawer" aria-label="Navegación principal">
       <a
         *ngFor="let item of nav"
         class="nav__link"
@@ -22,6 +26,7 @@
         {{ item.label }}
       </a>
     </nav>
+    <label class="navOverlay" for="navToggle" aria-label="Cerrar menú"></label>
   </div>
 </header>
 
