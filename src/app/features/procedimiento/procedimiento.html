@@ -129,7 +129,7 @@
   tabindex="0"
 >
                 <div class="stateTile__img">
-                  <img [src]="s.img" (error)="imgFallback($event)" alt="Estado {{ s.state }}" />
+                  <img [src]="assetUrl(s.img)" (error)="imgFallback($event)" alt="Estado {{ s.state }}" />
                 </div>
 
                 <div class="stateTile__foot">
@@ -162,7 +162,7 @@
     </div>
 
     <div class="imgModal__body">
-      <img [src]="previewImg()!" alt="Vista previa" />
+      <img [src]="assetUrl(previewImg())!" alt="Vista previa" />
     </div>
   </div>
 </div>
@@ -333,7 +333,7 @@
           >
             <img
               *ngIf="r.anglesImage"
-              [src]="r.anglesImage"
+              [src]="assetUrl(r.anglesImage)"
               [alt]="'Angles ' + r.scenarioId"
               loading="lazy"
               (error)="imgFallback($event)"
@@ -420,7 +420,7 @@
               [disabled]="!r.stressImg"
               title="Ver imagen"
             >
-              <img class="thumbImg" [src]="r.stressImg" [alt]="'FEM ' + r.scenarioId" />
+              <img class="thumbImg" [src]="assetUrl(r.stressImg)" [alt]="'FEM ' + r.scenarioId" />
             </button>
           </td>
 

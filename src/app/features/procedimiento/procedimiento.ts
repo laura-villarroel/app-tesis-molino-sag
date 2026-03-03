@@ -386,7 +386,7 @@ const items = rawObj['items'] ?? rawObj ?? {};
 
   private toAssetUrl(p: any): string {
     const s = String(p ?? '').trim();
-    if (!s) return '/assets/branding/molino-sag-v2.png';
+    if (!s) return 'assets/branding/molino-sag-v2.png';
 
     if (/^https?:\/\//i.test(s)) return s;
 
@@ -400,6 +400,11 @@ const items = rawObj['items'] ?? rawObj ?? {};
     return '/assets/' + s;
   }
 
+  assetUrl(p?: string | null): string {
+  if (!p) return '';
+
+  return p.replace(/^\/+/, '');
+}
   readonly stage1EmbedUrl = computed<SafeResourceUrl | null>(() => {
     const url = this.stage1Item()?.wearVideoDefault ?? '';
     if (!url) return null;
