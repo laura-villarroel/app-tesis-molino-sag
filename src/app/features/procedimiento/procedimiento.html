@@ -416,7 +416,7 @@
             <button
               type="button"
               class="thumbBtn"
-              (click)="openPreview(r.stressImg, r.scenarioId)"
+              (click)="openPreview(asAssetUrl(r.stressImg), r.scenarioId)"
               [disabled]="!r.stressImg"
               title="Ver imagen"
             >
@@ -608,7 +608,7 @@
                 type="button"
                 class="thumbBtn"
                 [disabled]="!r.productsImg"
-                (click)="openPreview(r.productsImg, r.scenarioId + ' · Productos')"
+                (click)="openPreview(asAssetUrl(r.productsImg), r.scenarioId + ' · Productos')"
                 title="Ver productos"
               >
                 <img *ngIf="r.productsImg" [src]="asAssetUrl(r.productsImg)" [alt]="r.scenarioId" />
@@ -716,7 +716,7 @@
                 type="button"
                 class="thumbBtn"
                 [disabled]="!r.anglesImg"
-                (click)="openPreview(r.anglesImg, r.scenarioId + ' · anglesImage')"
+                (click)="openPreview(asAssetUrl(r.anglesImg), r.scenarioId + ' · anglesImage')"
                 title="Ver anglesImage"
               >
                 <img *ngIf="r.anglesImg" [src]="asAssetUrl(r.anglesImg)" [alt]="r.scenarioId" />

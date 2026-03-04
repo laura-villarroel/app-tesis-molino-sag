@@ -531,12 +531,18 @@ goScenario(id: string) {
 
 
 
+
 asAssetUrl(path: string | null | undefined): string | null {
   if (!path) return null;
+
   const p = String(path).trim();
   if (!p) return null;
-  if (p.startsWith('assets/')) return '/' + p;
-  return p;
+
+
+  if (p.startsWith('http://') || p.startsWith('https://')) return p;
+
+
+  return p.replace(/^\/+/, '');
 }
 
 trackScenarioId = (_: number, r: { scenarioId: string }) => r.scenarioId;
