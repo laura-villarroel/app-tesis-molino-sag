@@ -517,7 +517,7 @@ readonly stage3Rows = computed<Stage3FemRow[]>(() => {
 });
 
 
-readonly femYieldMPa = 680;
+readonly femYieldMPa = 800;
 
 
 
