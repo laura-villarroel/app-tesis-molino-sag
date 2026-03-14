@@ -154,18 +154,7 @@
 
           </div>
         </div>
-<div class="imgModal" *ngIf="previewImg()" (click)="closePreview()">
-  <div class="imgModal__panel" (click)="$event.stopPropagation()">
-    <div class="imgModal__top">
-      <div class="imgModal__title">{{ previewTitle() }}</div>
-      <button class="imgModal__close" type="button" (click)="closePreview()">✕</button>
-    </div>
 
-    <div class="imgModal__body">
-      <img [src]="assetUrl(previewImg())!" alt="Vista previa" />
-    </div>
-  </div>
-</div>
 
       </ng-container>
   <!-- ETAPA 2 -->
@@ -827,5 +816,17 @@
 </ng-container>
 
     </div>
+    <div class="imgModal" *ngIf="previewImg()" (click)="closePreview()">
+  <div class="imgModal__panel" (click)="$event.stopPropagation()">
+    <div class="imgModal__top">
+      <div class="imgModal__title">{{ previewTitle() }}</div>
+      <button class="imgModal__close" type="button" (click)="closePreview()">✕</button>
+    </div>
+
+    <div class="imgModal__body">
+  <img [src]="previewImg()!" alt="Vista previa" />
+    </div>
+  </div>
+</div>
   </div>
 </section>
