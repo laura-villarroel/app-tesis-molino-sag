@@ -36,7 +36,7 @@
         </div>
 
         <div class="thesisHead__right">
-          <a class="btn btn--cta" [href]="thesisPdf" target="_blank" rel="noopener">
+          <a class="btn btn--cta" [href]="thesisPdf" target="_blank" rel="noopener noreferrer">
             Descargar tesis (PDF)
           </a>
         </div>
@@ -48,7 +48,7 @@
   <div class="meta__k">Autora</div>
   <div class="meta__v">{{ author }}</div>
 
-  <a class="authorLink" [href]="linkedin" target="_blank" rel="noopener" aria-label="LinkedIn">
+  <a class="authorLink" [href]="linkedin" target="_blank" rel="noopener" aria-label="Perfil de LinkedIn de la autora">
     <span class="liIcon" aria-hidden="true">in</span>
     <span class="authorLink__txt">LinkedIn</span>
   </a>
@@ -64,8 +64,8 @@
           <div class="meta__top">
             <div>
               <div class="meta__k">Institución</div>
-              <div class="meta__v">Pontificia Universidad Católica del Perú (PUCP)</div>
-              <div class="meta__s">Escuela de Posgrado · Ingeniería Mecánica</div>
+              <div class="meta__v">{{ institution }}</div>
+              <div class="meta__s">{{ institutionSub }}</div>
             </div>
 
             <img class="metaLogo" [src]="pucpLogo" alt="PUCP" />
@@ -79,7 +79,7 @@
   <article class="card">
     <div class="card__title">Qué hace la herramienta</div>
     <ul class="list">
-      <li *ngFor="let it of whatDoesAppDo">{{ it }}</li>
+    <li *ngFor="let it of whatDoesAppDo; trackBy: trackByValue">{{ it }}</li>
     </ul>
 
     <div class="note note--soft">
@@ -96,7 +96,7 @@
     <article class="card">
       <div class="card__title">Limitaciones</div>
       <ul class="list">
-        <li *ngFor="let it of limitations">{{ it }}</li>
+        <li *ngFor="let it of limitations; trackBy: trackByValue">{{ it }}</li>
       </ul>
     </article>
   </div>
@@ -114,7 +114,7 @@
       </div>
 
       <div class="stageGrid">
-        <div class="stage" *ngFor="let s of stages">
+        <div class="stage" *ngFor="let s of stages; trackBy: trackByStage">
           <div class="stage__k">{{ s.k }}</div>
           <div class="stage__v">{{ s.v }}</div>
         </div>

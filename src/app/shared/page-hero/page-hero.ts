@@ -45,13 +45,18 @@ export class PageHeroComponent {
   @Input() imgPosY = 50;
 
   isExternal(a: HeroAction): boolean {
-    if (a.external) return true;
+  if (a.external) return true;
 
-    return !a.link.startsWith('/');
+  return /^(https?:|mailto:|tel:)/i.test(a.link);
+}
+
+ hrefFor(a: HeroAction): string {
+  if (/^(https?:|mailto:|tel:)/i.test(a.link)) {
+    return a.link;
   }
 
-  hrefFor(a: HeroAction): string {
-
-    return a.link.startsWith('/') ? a.link : `/${a.link}`;
-  }
+  return a.link.startsWith('/') ? a.link : `/${a.link}`;
+}
+trackByValue = (_: number, v: string) => v;
+trackByAction = (_: number, a: HeroAction) => a.label;
 }

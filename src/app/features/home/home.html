@@ -1,7 +1,7 @@
 
 <section class="hero hero--visual">
   <div class="hero__bg" aria-hidden="true">
-  <img [src]="heroImageSrc" alt="" />
+  <img [src]="heroImageSrc" alt="Modelo de molino SAG utilizado en el estudio" />
 </div>
 
   <div class="hero__content">
@@ -47,14 +47,14 @@
 
 <!-- KPIs -->
 <section class="kpis kpis--classic">
-  <div class="kpi card" *ngFor="let k of kpis">
+  <div class="kpi card" *ngFor="let k of kpis; trackBy: trackByTitle">
 
     <div class="kpi__title-row">
       <div class="kpi__title">{{ k.title }}</div>
 
       <div class="kpi__icon" aria-hidden="true">
         <ng-container [ngSwitch]="true">
-          <span *ngSwitchCase="k.title.toLowerCase().includes('fem')">🧩</span>
+      <span *ngSwitchCase="'fem'">🧩</span>
           <span *ngSwitchCase="k.title.toLowerCase().includes('dem')">⚙️</span>
           <span *ngSwitchCase="k.title.toLowerCase().includes('ganadores')">🏆</span>
           <span *ngSwitchCase="k.title.toLowerCase().includes('videos')">🎥</span>
@@ -88,7 +88,7 @@
   </div>
 
   <ol class="steps">
-    <li *ngFor="let s of methodologySteps">
+    <li *ngFor="let s of methodologySteps; trackBy: trackByTitle">
       <div class="steps__t">{{ s.title }}</div>
       <div class="steps__d">{{ s.desc }}</div>
     </li>
@@ -111,7 +111,7 @@
   <div class="winners__grid">
     <a
       class="winner"
-      *ngFor="let w of winners"
+      *ngFor="let w of winners; trackBy: trackByScenario"
       [routerLink]="['/escenario', w.scenario]"
       title="Abrir carta del escenario"
     >

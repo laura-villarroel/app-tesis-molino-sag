@@ -17,10 +17,10 @@ import { Stage45Store } from '../../shared/data/stage45.store';
 import { Stage3FemStore } from '../../shared/data/stage3-fem.store';
 import {
   Stage1WearStore,
-  normalizeScenarioId,
   Stage1WearItem,
   Stage1WearTransition,
 } from '../../shared/data/stage1-wear.store';
+import { normalizeScenarioId } from '../../shared/data/scenario-id';
 import { StrategyAdaptiveStore } from '../../shared/data/strategy-adaptive.store';
 
 type TabKey = 'general' | 'stage1' | 'stage2' | 'stage3' | 'stage4' | 'stage5' | 'stage6';

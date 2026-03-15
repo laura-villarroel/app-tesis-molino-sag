@@ -39,13 +39,13 @@ export class Stage3FemStore {
     .get<Stage3FemJson>('assets/data/stage3.fem.json')
     .pipe(
       map((raw) => this.normalizeRows(raw)),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: true }),
     );
 
   /** map por scenarioId  */
   readonly map$: Observable<Record<string, Stage3FemRow>> = this.rows$.pipe(
     map((rows) => this.toMap(rows)),
-    shareReplay(1),
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
 
   // ---------------------------
@@ -77,7 +77,7 @@ export class Stage3FemStore {
   }
 
   private toRows(items: AnyObj[]): Stage3FemRow[] {
-    const isScenarioId = (s: string) => /^E[1-5]-V\d-L\d$/i.test(s.trim());
+    const isScenarioId = (s: string) => /^E[1-5]-V\d+-L\d+$/i.test(s.trim());
 
     return items
       .map((r: AnyObj): Stage3FemRow | null => {

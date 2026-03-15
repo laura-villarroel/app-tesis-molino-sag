@@ -1,6 +1,7 @@
 export function normalizeScenarioId(id: string): string {
-  // Convierte en dash/emdash a hyphen normal
-  return (id ?? '')
-    .replace(/[–—]/g, '-')  // “–” o “—” -> "-"
-    .trim();
+  return String(id ?? '')
+    .trim()
+    .replace(/[–—−]/g, '-')
+    .replace(/\s+/g, '')
+    .toUpperCase();
 }

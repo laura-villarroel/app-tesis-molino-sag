@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map, shareReplay } from 'rxjs';
-
+import { normalizeScenarioId } from './scenario-id';
 type AnyObj = Record<string, any>;
 
 export type StrategyAdaptiveJson = AnyObj;
@@ -50,7 +50,7 @@ export class StrategyAdaptiveStore {
   );
 
 
-  readonly maps$: Observable<Record<string, StrategyAdaptiveScenario>> = this.map$;
+
 
 
   readonly summary$: Observable<StrategyAdaptiveSummary | null> = this.raw$.pipe(
@@ -92,7 +92,7 @@ export class StrategyAdaptiveStore {
     const rawScenario =
       this.pickString(t, ['scenarioId', 'Escenario', 'scenario', 'id']) ?? '';
 
-    const scenarioId = this.normalizeScenarioId(rawScenario);
+    const scenarioId = normalizeScenarioId(rawScenario);
     if (!scenarioId) return null;
 
     return {
@@ -118,15 +118,7 @@ additionalMonthsVsBaseFS: this.pickNumber(t, [
 ]),};
   }
 
-  private normalizeScenarioId(s: string): string {
-    if (!s) return '';
 
-    const cleaned = s
-      .trim()
-      .replace(/[–—−]/g, '-')
-      .replace(/\s+/g, '');
-    return cleaned;
-  }
 
   private pickNumber(obj: AnyObj, keys: string[]): number | null {
     if (!obj) return null;

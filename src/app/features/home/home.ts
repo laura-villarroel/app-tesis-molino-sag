@@ -2,9 +2,14 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
-type Kpi = { title: string; value: string | number; subtitle: string };
-type Winner = { state: string; scenario: string };
 
+type Winner = { state: string; scenario: string };
+type Kpi = {
+  title: string;
+  value: string | number;
+  subtitle: string;
+  icon: string;
+};
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -18,13 +23,13 @@ export class HomeComponent {
 
 
   kpis: Kpi[] = [
-    { title: 'Estados Desgastado (Etapa 1)', value: 5, subtitle: 'E1–E5 (DEM, desgaste activo, 1300 s)' },
-    { title: 'Simulaciones DEM (Etapa 2)', value: 31, subtitle: 'Exploración operacional (sin rotura ni desgaste)' },
-    { title: 'Ganadores Etapa 2', value: 10, subtitle: 'Selección por indicador global' },
-    { title: 'Casos FEM (Etapa 3)', value: 11, subtitle: 'ANSYS Mechanical (10 ganadores + base)' },
-    { title: 'Casos DEM (Etapa 4)', value: 11, subtitle: 'Desgaste activo (velocidad de desgaste)' },
-    { title: 'Casos DEM (Etapa 5)', value: 11, subtitle: 'Rotura activa (sin desgaste activo)' },
-    { title: 'Videos documentados', value: 54, subtitle: 'Etapa 1 (1) + Etapa 2 (31) + Etapa 4 (11) + Etapa 5 (11)' },
+    { title: 'Estados Desgastado (Etapa 1)', value: 5, subtitle: 'E1–E5 (DEM, desgaste activo, 1300 s)', icon: 'fem'  },
+    { title: 'Simulaciones DEM (Etapa 2)', value: 31, subtitle: 'Exploración operacional (sin rotura ni desgaste)', icon: 'fem'  },
+    { title: 'Ganadores Etapa 2', value: 10, subtitle: 'Selección por indicador global', icon: 'fem'  },
+    { title: 'Casos FEM (Etapa 3)', value: 11, subtitle: 'ANSYS Mechanical (10 ganadores + base)', icon: 'fem'  },
+    { title: 'Casos DEM (Etapa 4)', value: 11, subtitle: 'Desgaste activo (velocidad de desgaste)', icon: 'fem'  },
+    { title: 'Casos DEM (Etapa 5)', value: 11, subtitle: 'Rotura activa (sin desgaste activo)', icon: 'fem'  },
+    { title: 'Videos documentados', value: 54, subtitle: 'Etapa 1 (1) + Etapa 2 (31) + Etapa 4 (11) + Etapa 5 (11)', icon: 'fem'  },
   ];
 
 
@@ -45,4 +50,6 @@ export class HomeComponent {
     { title: 'Etapa 5 — Rotura activa (DEM)', desc: '11 casos con rotura activa (sin desgaste activo). Se extraen indicadores finales para seleccionar 5 ganadores (E1–E5).' },
     { title: 'Etapa 6 — Indicador global y selección final', desc: 'Cálculo del indicador global combinando resultados de Etapa 4 (desgaste activo) y Etapa 5 (rotura activa). Se determinó un escenario ganador óptimo por cada estado operativo (E1–E5).' },
   ];
+  trackByTitle = (_: number, item: { title: string }) => item.title;
+trackByScenario = (_: number, item: { scenario: string }) => item.scenario;
 }

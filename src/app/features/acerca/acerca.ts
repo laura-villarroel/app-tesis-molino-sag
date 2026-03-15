@@ -71,5 +71,6 @@ readonly heroChips: string[] = [
     'Se excluyen del análisis otros elementos y partes que conforman el molino.',
     'Los resultados dependen de las condiciones y supuestos del modelo numérico (DEM–FEM) definidos en el estudio.',
   ];
-
+trackByValue = (_: number, v: string) => v;
+trackByStage = (_: number, s: { k: string }) => s.k;
 }

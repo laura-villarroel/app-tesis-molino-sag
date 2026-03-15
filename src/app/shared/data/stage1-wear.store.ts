@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, shareReplay } from 'rxjs';
-
+import { normalizeScenarioId } from './scenario-id';
 export type Stage1WearTransition = {
   transition: 'E1' | 'E2' | 'E3' | 'E4' | 'E5';
   dH_mm: number;
@@ -26,14 +26,7 @@ type Stage1WearJson = {
   items: Record<string, Stage1WearItem>;
 };
 
-// normaliza ids con – y —
-export function normalizeScenarioId(id: string): string {
-  return String(id ?? '')
-    .trim()
-    .replace(/[–—]/g, '-') // en-dash/em-dash -> hyphen
-    .replace(/\s+/g, '')
-    .toUpperCase();
-}
+
 
 @Injectable({ providedIn: 'root' })
 export class Stage1WearStore {

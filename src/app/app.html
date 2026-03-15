@@ -17,11 +17,13 @@
 
    <nav class="nav navDrawer" aria-label="Navegación principal">
       <a
-        *ngFor="let item of nav"
+       *ngFor="let item of nav; trackBy: trackByPath"
         class="nav__link"
         [routerLink]="item.path"
         routerLinkActive="is-active"
         [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+        (click)="closeMenu()"
+
       >
         {{ item.label }}
       </a>

@@ -13,13 +13,18 @@ type NavItem = { label: string; path: string };
   styleUrl: './app.scss',
 })
 export class AppComponent {
-  nav: NavItem[] = [
+  readonly nav: NavItem[] = [
     { label: 'Inicio', path: '/' },
     { label: 'Herramienta de decisión', path: '/decision' },
     { label: 'Procedimiento', path: '/procedimiento' },
     { label: 'Biblioteca de resultados', path: '/biblioteca' },
     { label: 'Acerca de', path: '/acerca' },
   ];
-
-
+trackByPath(_: number, item: NavItem): string {
+  return item.path;
+}
+closeMenu(): void {
+  const el = document.getElementById('navToggle') as HTMLInputElement | null;
+  if (el) el.checked = false;
+}
 }

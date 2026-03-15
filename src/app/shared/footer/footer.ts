@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
   styleUrl: './footer.scss',
 })
 export class Footer {
-  readonly year = 2026;
+readonly year = new Date().getFullYear();
   readonly location = 'Lima, Perú';
 
   readonly thesisTitle =
