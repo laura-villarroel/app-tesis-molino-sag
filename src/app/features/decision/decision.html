@@ -1,4 +1,3 @@
-
 <app-page-hero
   title="Herramienta de decisión"
   [subtitle]="'Ingresa el espesor actual del lifter bajo (H, mm) para estimar el estado de desgaste (E1–E5) y obtener la estrategia recomendada.'"
@@ -9,134 +8,153 @@
   [imgPosY]="50"
 ></app-page-hero>
 
-
 <div class="decision">
   <div class="grid">
 
-
+    <!-- ================= INPUT ================= -->
     <section class="card left">
       <header class="cardHead">
         <div class="pill">H (mm)</div>
         <div class="headText">
           <div class="headTitle">Espesor del lifter bajo</div>
-         <div class="headSub">
-  Referencia geométrica (sin desgaste)
-</div>
-
+          <div class="headSub">
+            Referencia geométrica (sin desgaste)
+          </div>
         </div>
       </header>
 
       <div class="leftBody">
-        <div class="inputBlock">
-          <label class="lbl">Espesor actual (H)</label>
 
-          <div class="field">
-            <input
-              class="hInput"
-              type="number"
-              inputmode="numeric"
-              [min]="minH"
-              [max]="maxH"
-              step="1"
-              [(ngModel)]="h"
-              placeholder="Ej. 170"
-            />
-            <span class="unit">mm</span>
-          </div>
+        <div class="inputSection">
+          <div class="inputBlock">
+            <label class="lbl">Espesor actual (H)</label>
 
-          <div class="hint">
-            Rango válido: {{ rangeText }} · H actual: <b>{{ h ?? '—' }}</b> mm
-          </div>
+            <div class="field">
+              <input
+                class="hInput"
+                type="number"
+                inputmode="numeric"
+                aria-label="Espesor actual del lifter bajo en milímetros"
+                [min]="minH"
+                [max]="maxH"
+                step="1"
+                [(ngModel)]="h"
+                placeholder="Ej. 170"
+              />
+              <span class="unit">mm</span>
+            </div>
 
-          <div class="btnRow">
-            <button class="btn btn--cta" (click)="calculate()">Calcular escenario</button>
-            <button class="btn btn--ghost" (click)="clear()">Limpiar</button>
-          </div>
+            <div class="hint">
+              Rango válido: {{ rangeText }} · H actual: <b>{{ h ?? '—' }}</b> mm
+            </div>
 
-          <div class="presets">
-            <button class="chip" *ngFor="let v of presets" (click)="setPreset(v)">Ej. {{ v }}</button>
-          </div>
+            <div class="btnRow">
+              <button class="btn btn--cta" (click)="calculate()">
+                Calcular escenario
+              </button>
+              <button class="btn btn--ghost" (click)="clear()">
+                Limpiar
+              </button>
+            </div>
 
+            <div class="presets">
+              <button
+                class="chip"
+                *ngFor="let v of presets"
+                (click)="setPreset(v)"
+              >
+                {{ v }}
+              </button>
+            </div>
 
-
-          <div class="alert" *ngIf="computed && error">
-            {{ error }}
+            <div
+              class="alert"
+              [class.alert--critical]="h !== null && h < minH"
+              [class.alert--warning]="h !== null && h > maxH"
+              *ngIf="computed && error"
+            >
+              {{ error }}
+            </div>
           </div>
         </div>
 
-
         <figure class="miniFig">
-        <button
-  class="miniFrame miniFrame--click"
-  type="button"
-  (click)="openLightbox('assets/onboarding/perfil_revestimiento.png', 'Perfil del revestimiento (referencia H)')"
->
-  <img
-    src="assets/onboarding/perfil_revestimiento.png"
-    alt="Perfil del revestimiento (referencia H)"
-  />
-</button>
-<figcaption>
-  Perfil del revestimiento (referencia H)
-  <span class="capSub">
-    Geometría de referencia (sin desgaste): Lifter bajo <b>229 mm</b> · Altura del lifter <b>305 mm</b>
-  </span>
-</figcaption>
-
+          <button
+            class="miniFrame miniFrame--click"
+            type="button"
+            (click)="openLightbox('assets/onboarding/perfil_revestimiento.png', 'Perfil del revestimiento (referencia H)')"
+          >
+            <img
+              src="assets/onboarding/perfil_revestimiento.png"
+              alt="Perfil del revestimiento (referencia H)"
+            />
+          </button>
+          <figcaption>
+            Perfil del revestimiento (referencia H)
+            <span class="capSub">
+              Geometría de referencia (sin desgaste):
+              Lifter bajo <b>229 mm</b> · Altura del lifter <b>305 mm</b>
+            </span>
+          </figcaption>
         </figure>
+
       </div>
+
       <div class="note note--wide">
-  Nota: los rangos de H se definieron usando el punto medio entre estados simulados,
-  para una transición operativa consistente.
-</div>
+        Nota: los rangos de H se definieron usando el punto medio entre estados simulados,
+        para una transición operativa consistente.
+      </div>
     </section>
-
-
+ <!-- ================= CONTEXTO (IMAGEN MOLINO) ================= -->
     <section class="card right">
       <figure class="heroFig">
-     <button
-  class="heroFig__frame heroFig__frame--click"
-  type="button"
-  (click)="openLightbox('assets/onboarding/molino_sag.png', 'Molino SAG — 18ft Dia x 14.6 ft')"
->
-  <img
-    src="assets/onboarding/molino_sag.png"
-    alt="Molino SAG — 18ft Dia x 14.6 ft (referencia)"
-  />
-</button>
-
-        <figcaption>Molino SAG — 18 ft DIA x 14.6 ft LG</figcaption>
+        <button
+          class="heroFig__frame heroFig__frame--click"
+          type="button"
+          (click)="openLightbox('assets/onboarding/molino_sag.png', 'Molino SAG — 18ft Dia x 14.6 ft')"
+        >
+          <img
+            src="assets/onboarding/molino_sag.png"
+            alt="Molino SAG — 18ft Dia x 14.6 ft"
+          />
+        </button>
+        <figcaption>
+          Molino SAG — 18 ft DIA x 14.6 ft LG
+        </figcaption>
       </figure>
 
-      <div class="howto card">
+      <div class="howto">
         <div class="howTitle">Cómo usar</div>
         <ol class="howList">
-          <li>Ingresa el valor de <b>H (mm)</b> medido en el lifter bajo.</li>
+          <li>Ingresa el valor de <b>H (mm)</b>.</li>
           <li>Presiona <b>Calcular escenario</b>.</li>
-          <li>Revisa el estado (E1–E5) y abre la carta del escenario recomendado.</li>
+          <li>Revisa el estado y la estrategia recomendada.</li>
         </ol>
       </div>
     </section>
-
-    <!-- RESULTADO  -->
-   <div class="resultWrap">  <app-decision-result
-  [scenarioId]="scenarioId"
-  [hMm]="h"
-  [state]="row?.state ?? null"
-  [stateRangeText]="stateRangeText"
-  [ncFillText]="ncFillText"
-  [scenarioLink]="row ? ['/escenario', row.scenarioId] : null"
-></app-decision-result></div>
+    <!-- ================= RESULTADO ================= -->
+    <section class="resultWrap">
+      <app-decision-result
+        [scenarioId]="scenarioId"
+        [hMm]="h"
+        [state]="row?.state ?? null"
+        [stateRangeText]="stateRangeText"
+        [ncFillText]="ncFillText"
+        [scenarioLink]="row ? ['/escenario', row.scenarioId] : null"
+      ></app-decision-result>
+    </section>
 
 
 
   </div>
+
+  <!-- ================= LIGHTBOX ================= -->
   <div class="lightbox" [class.isOpen]="lightboxOpen" (click)="closeLightbox()">
-  <div class="lightbox__panel" (click)="$event.stopPropagation()">
-    <button class="lightbox__close" type="button" (click)="closeLightbox()">✕</button>
-    <img [src]="lightboxSrc" [alt]="lightboxAlt" />
-    <div class="lightbox__caption">{{ lightboxAlt }}</div>
+    <div class="lightbox__panel" (click)="$event.stopPropagation()">
+      <button class="lightbox__close" type="button" (click)="closeLightbox()">✕</button>
+      <img [src]="lightboxSrc" [alt]="lightboxAlt" />
+      <div class="lightbox__caption">{{ lightboxAlt }}</div>
+    </div>
   </div>
-</div>
 
 </div>

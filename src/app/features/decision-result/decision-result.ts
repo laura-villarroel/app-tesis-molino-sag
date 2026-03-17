@@ -10,15 +10,17 @@ import { GeneralStore } from '../../../app/shared/data/general.store';
 import { Stage45Store } from '../../../app/shared/data/stage45.store';
 import { Stage2KpiStore } from '../../../app/shared/data/stage2-kpi.store';
 import { StrategyAdaptiveStore } from '../../../app/shared/data/strategy-adaptive.store';
+import type { Stage45Scenario } from '../../../app/shared/data/stage45.store';
+import type { GeneralScenario } from '../../../app/shared/data/general.store';
+import type { Stage2KpiScenario } from '../../../app/shared/data/stage2-kpi.store';
+import type { StrategyAdaptiveTransitionRow } from '../../../app/shared/data/strategy-adaptive.store';
 
 type Vm = {
   id: string;
-
-  general: any | null;
-  stage45: any | null;
-  stage2: any | null;
-  adaptive: any | null;
-
+  general: GeneralScenario | null;
+  stage45: Stage45Scenario | null;
+  stage2: Stage2KpiScenario | null;
+  adaptive: StrategyAdaptiveTransitionRow | null;
   videoEmbed: SafeResourceUrl | null;
 };
 
@@ -62,8 +64,8 @@ export class DecisionResult {
       const adaptive = aMap[id] ?? null;
 
       const videoEmbed = stage2?.video ? this.toYoutubeEmbed(stage2.video) : null;
-
       return { id, general, stage45, stage2, adaptive, videoEmbed };
+
     })
   );
 
@@ -103,4 +105,19 @@ closeLightbox() {
     const embed = id ? `https://www.youtube.com/embed/${id}` : url;
     return this.sanitizer.bypassSecurityTrustResourceUrl(embed);
   }
+  getIndicatorLevel(v: number | null | undefined): 'ok' | 'mid' | 'low' {
+  const val = v ?? 0;
+
+  if (val >= 0.7) return 'ok';
+  if (val >= 0.5) return 'mid';
+  return 'low';
+}
+
+getIndicatorLabel(v: number | null | undefined): string {
+  const val = v ?? 0;
+
+  if (val >= 0.7) return 'Bueno';
+  if (val >= 0.5) return 'Medio';
+  return 'Bajo';
+}
 }

@@ -71,7 +71,7 @@
         </div>
 
         <div class="panelFoot" *ngIf="vm.stage2?.indGlobal !== undefined">
-          Indicador global (Etapa 2): <b>{{ num(vm.stage2.indGlobal, 2) }}</b>
+          Indicador global (Etapa 2): <b>{{ num(vm.stage2?.indGlobal ?? null, 2) }}</b>
         </div>
       </section>
     </div>
@@ -119,9 +119,10 @@
 
   <div class="kpi__value kpi__value--big">
     {{ num(p.indGlobal, 2) }}
-    <span class="kpiBadge" [class.ok]="p.indGlobal >= 0.7" [class.mid]="p.indGlobal < 0.7 && p.indGlobal >= 0.5" [class.low]="p.indGlobal < 0.5">
-      {{ p.indGlobal >= 0.7 ? 'Bueno' : (p.indGlobal >= 0.5 ? 'Medio' : 'Bajo') }}
-    </span>
+   <span class="kpiBadge"
+      [ngClass]="getIndicatorLevel(p.indGlobal)">
+  {{ getIndicatorLabel(p.indGlobal) }}
+</span>
   </div>
 
   <div class="kpiBar">

@@ -1,7 +1,6 @@
 <app-page-hero
   title="Biblioteca de resultados"
   [subtitle]="'Explora los 31 escenarios del estudio. Filtra por estado (E1–E5) y marca ganadores (Etapa 2 / finales).'"
-
   [imgSrc]="'assets/branding/molino-sag-v2.png'"
   [actions]="[
     { label: 'Ir a herramienta de decisión', link: '/decision', variant: 'cta' },
@@ -16,26 +15,22 @@
 <section class="results">
   <div class="panel">
     <div class="panel__top">
- <section class="kpis kpis--classic">
-  <div class="kpi card" *ngFor="let k of kpis(); trackBy: trackKpi">
-    <div class="kpi__title-row">
-      <div class="kpi__title">{{ k.title }}</div>
 
-      <div class="kpi__icon" aria-hidden="true">
-        <ng-container [ngSwitch]="true">
-          <span *ngSwitchCase="k.title.toLowerCase().includes('fem')">🧩</span>
-          <span *ngSwitchCase="k.title.toLowerCase().includes('dem')">⚙️</span>
-          <span *ngSwitchCase="k.title.toLowerCase().includes('ganadores')">🏆</span>
-          <span *ngSwitchDefault>📊</span>
-        </ng-container>
+      <!-- KPIs -->
+      <div class="kpis kpis--classic">
+        <div class="kpi card" *ngFor="let k of kpis(); trackBy: trackKpi">
+          <div class="kpi__title-row">
+            <div class="kpi__title">{{ k.title }}</div>
+            <div class="kpi__icon" aria-hidden="true">
+              <span>{{ k.icon }}</span>
+            </div>
+          </div>
+          <div class="kpi__value">{{ k.value }}</div>
+          <div class="kpi__subtitle">{{ k.subtitle }}</div>
+        </div>
       </div>
-    </div>
 
-    <div class="kpi__value">{{ k.value }}</div>
-    <div class="kpi__subtitle">{{ k.subtitle }}</div>
-  </div>
-</section>
-
+      <!-- FILTROS -->
       <div class="filters">
         <label class="f">
           <span class="f__k">Buscar</span>
@@ -86,8 +81,9 @@
           >
             Tarjetas
           </button>
+
           <button
-            class="chip"
+            class="chip chip--table"
             type="button"
             [class.isOn]="viewMode() === 'table'"
             (click)="setView('table')"
@@ -96,195 +92,211 @@
           </button>
         </div>
       </div>
-    </div>
 
-    <!-- EMPTY -->
-    <div class="empty" *ngIf="filtered().length === 0">
-      No hay resultados con los filtros actuales.
-    </div>
+    </div> <!-- cierre panel__top -->
 
-    <!-- CARDS -->
-    <div class="grid" *ngIf="viewMode() === 'cards' && filtered().length">
-      <article
-        class="card"
-        *ngFor="let r of filtered(); trackBy: trackByScenarioId"
-        [id]="cardDomId(r.scenarioId)"
-        [class.flash]="flashId() === r.scenarioId"
-      >
-        <div class="card__head">
-          <div class="card__titleRow">
-            <a class="card__title" [routerLink]="['/escenario', r.scenarioId]">
-              {{ r.scenarioId }}
+    <!-- CONTENIDO DINÁMICO -->
+    <ng-container *ngIf="filtered() as rows">
+
+      <div class="empty" *ngIf="rows.length === 0">
+        No hay resultados con los filtros actuales.
+      </div>
+
+      <!-- CARDS -->
+      <div class="grid" *ngIf="viewMode() === 'cards' && rows.length">
+        <article
+          class="card"
+          *ngFor="let r of rows; trackBy: trackByScenarioId"
+          [id]="r.domId"
+          [class.flash]="flashId() === r.scenarioId"
+        >
+
+          <div class="card__head">
+            <div class="card__titleRow">
+              <a class="card__title" [routerLink]="['/escenario', r.scenarioId]">
+                {{ r.scenarioId }}
+              </a>
+
+              <div class="badges">
+                <span class="badge badge--state">{{ r.state }}</span>
+
+                <span
+                  *ngIf="r.winnerLabel"
+                  class="badge"
+                  [class.badge--stage2]="r.winnerLabel === 'Ganador etapa 2'"
+                  [class.badge--final]="r.winnerLabel === 'Ganador final'"
+                >
+                  {{ r.winnerLabel }}
+                </span>
+              </div>
+            </div>
+
+            <a class="card__link" [routerLink]="['/escenario', r.scenarioId]">
+              Ver detalle
             </a>
+          </div>
 
-            <div class="badges">
-              <span class="badge badge--state">{{ r.state }}</span>
-
-              <span
-                *ngIf="r.winnerLabel"
-                class="badge"
-                [class.badge--stage2]="r.winnerLabel === 'Ganador etapa 2'"
-                [class.badge--final]="r.winnerLabel === 'Ganador final'"
-              >
-                {{ r.winnerLabel }}
-              </span>
+          <div class="cardKpis">
+            <div class="kpi">
+              <div class="kpi__k">Desgaste (%)</div>
+              <div class="kpi__v">{{ fmtPct(r.wearPct, 0) }}</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi__k">Nc (%)</div>
+              <div class="kpi__v">{{ fmtPct(r.NcPct, 0) }}</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi__k">Llenado (%)</div>
+              <div class="kpi__v">{{ fmtPct(r.fillPct, 0) }}</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi__k">rpm</div>
+              <div class="kpi__v">{{ fmtNum(r.rpm, 2) }}</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi__k">Masa total (t)</div>
+              <div class="kpi__v">{{ fmtNum(r.totalMass_t, 2) }}</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi__k">Potencia (kW)</div>
+              <div class="kpi__v">{{ fmtNum(r.powerMorrell_kW, 2) }}</div>
             </div>
           </div>
 
-          <a class="card__link" [routerLink]="['/escenario', r.scenarioId]">
+          <div class="imgWrap" *ngIf="r.anglesImage; else noImage">
+            <button
+              class="imgBtn"
+              type="button"
+              (click)="openLightbox(r.anglesImage, r.scenarioId)"
+            >
+              <img
+                [src]="r.anglesImage"
+                [alt]="'Angles ' + r.scenarioId"
+                loading="lazy"
+                (error)="imgFallback($event)"
+              />
+            </button>
+          </div>
+
+          <ng-template #noImage>
+            <div class="imgWrap imgWrap--empty">
+              <div class="imgEmpty">Sin imagen</div>
+            </div>
+          </ng-template>
+
+        </article>
+      </div>
+
+      <!-- TABLE -->
+      <div class="tableWrap" *ngIf="viewMode() === 'table' && rows.length">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Escenario</th>
+         <th>Imagen</th>
+        <th>Estado</th>
+
+        <th>Desgaste</th>
+        <th>Nc</th>
+        <th>Llenado</th>
+        <th>rpm</th>
+        <th>Masa (t)</th>
+        <th>Potencia (kW)</th>
+        <th>Ganador</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let r of rows; trackBy: trackByScenarioId">
+
+        <!-- Escenario -->
+        <td class="tScenario">
+          <button
+            class="linkBtn"
+            type="button"
+            (click)="openCardFromTable(r.scenarioId)"
+          >
+            {{ r.scenarioId }}
+          </button>
+
+          <a class="subLink" [routerLink]="['/escenario', r.scenarioId]">
             Ver detalle
           </a>
-        </div>
-
-        <!-- KPIs  -->
-        <div class="kpis">
-          <div class="kpi">
-            <div class="kpi__k">Desgaste (%)</div>
-            <div class="kpi__v">{{ fmtPct(r.wearPct, 0) }}</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi__k">Nc (%)</div>
-            <div class="kpi__v">{{ fmtPct(r.NcPct, 0) }}</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi__k">Llenado (%)</div>
-            <div class="kpi__v">{{ fmtPct(r.fillPct, 0) }}</div>
-          </div>
-
-          <div class="kpi">
-            <div class="kpi__k">rpm</div>
-            <div class="kpi__v">{{ fmtNum(r.rpm, 2) }}</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi__k">Masa total (t)</div>
-            <div class="kpi__v">{{ fmtNum(r.totalMass_t, 2) }}</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi__k">Potencia (kW)</div>
-            <div class="kpi__v">{{ fmtNum(r.powerMorrell_kW, 2) }}</div>
-          </div>
-        </div>
-
-        <!-- Imagen -->
-        <div class="imgWrap" *ngIf="r.anglesImage">
+        </td>
+  <!-- Imagen -->
+        <td class="tImg">
           <button
-            class="imgBtn"
+            class="thumbBtn"
             type="button"
             (click)="openLightbox(r.anglesImage, r.scenarioId)"
-            aria-label="Ver imagen grande"
+            [disabled]="!r.anglesImage"
           >
             <img
+              *ngIf="r.anglesImage"
               [src]="r.anglesImage"
-              [alt]="'Angles ' + r.scenarioId"
+              [alt]="'Thumb ' + r.scenarioId"
               loading="lazy"
               (error)="imgFallback($event)"
             />
+            <span *ngIf="!r.anglesImage" class="thumbEmpty">—</span>
           </button>
-        </div>
+        </td>
+        <!-- Estado -->
+        <td>
+          <span class="badge badge--state">
+            {{ r.state }}
+          </span>
+        </td>
 
-        <div class="imgWrap imgWrap--empty" *ngIf="!r.anglesImage">
-          <div class="imgEmpty">Sin imagen</div>
-        </div>
-      </article>
-    </div>
 
-    <!-- TABLE -->
-    <div class="tableWrap" *ngIf="viewMode() === 'table' && filtered().length">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Escenario</th>
-            <th>Estado</th>
-            <th>Imagen</th>
-            <th>Desgaste</th>
-            <th>Nc</th>
-            <th>Llenado</th>
-            <th>rpm</th>
-            <th>Masa (t)</th>
-            <th>Potencia (kW)</th>
-            <th>Ganador</th>
-          </tr>
-        </thead>
 
-        <tbody>
-          <tr *ngFor="let r of filtered(); trackBy: trackByScenarioId">
-            <td class="tScenario">
-              <button
-                class="linkBtn"
-                type="button"
-                (click)="openCardFromTable(r.scenarioId)"
-                title="Ir a la tarjeta"
-              >
-                {{ r.scenarioId }}
-              </button>
+        <td>{{ fmtPct(r.wearPct, 0) }}</td>
+        <td>{{ fmtPct(r.NcPct, 0) }}</td>
+        <td>{{ fmtPct(r.fillPct, 0) }}</td>
+        <td>{{ fmtNum(r.rpm, 2) }}</td>
+        <td>{{ fmtNum(r.totalMass_t, 2) }}</td>
+        <td>{{ fmtNum(r.powerMorrell_kW, 2) }}</td>
 
-              <a class="subLink" [routerLink]="['/escenario', r.scenarioId]">
-                Ver detalle
-              </a>
-            </td>
+        <!-- Ganador -->
+        <td>
+          <span
+            *ngIf="r.winnerLabel; else noWinner"
+            class="badge"
+            [class.badge--stage2]="r.winnerLabel === 'Ganador etapa 2'"
+            [class.badge--final]="r.winnerLabel === 'Ganador final'"
+          >
+            {{ r.winnerLabel }}
+          </span>
 
-            <td>
-              <span class="badge badge--state">{{ r.state }}</span>
-            </td>
+        <ng-template #noWinner>
+  <span class="muted">No clasifica</span>
+</ng-template>
+        </td>
 
-            <td class="tImg">
-              <button
-                class="thumbBtn"
-                type="button"
-                (click)="openLightbox(r.anglesImage, r.scenarioId)"
-                [disabled]="!r.anglesImage"
-                title="Ver imagen"
-              >
-                <img
-                  *ngIf="r.anglesImage"
-                  [src]="r.anglesImage"
-                  [alt]="'Thumb ' + r.scenarioId"
-                  loading="lazy"
-                  (error)="imgFallback($event)"
-                />
-                <span *ngIf="!r.anglesImage" class="thumbEmpty">—</span>
-              </button>
-            </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-            <td>{{ fmtPct(r.wearPct, 0) }}</td>
-            <td>{{ fmtPct(r.NcPct, 0) }}</td>
-            <td>{{ fmtPct(r.fillPct, 0) }}</td>
-            <td>{{ fmtNum(r.rpm, 2) }}</td>
-            <td>{{ fmtNum(r.totalMass_t, 2) }}</td>
-            <td>{{ fmtNum(r.powerMorrell_kW, 2) }}</td>
+    </ng-container>
 
-            <td>
-              <span
-                *ngIf="r.winnerLabel; else noWinner"
-                class="badge"
-                [class.badge--stage2]="r.winnerLabel === 'Ganador etapa 2'"
-                [class.badge--final]="r.winnerLabel === 'Ganador final'"
-              >
-                {{ r.winnerLabel }}
-              </span>
-              <ng-template #noWinner>
-                <span class="muted">No clasifica</span>
-              </ng-template>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
   </div>
 
-
-  <div
-    class="lightbox"
-    *ngIf="lightboxOpen()"
-    (click)="closeLightbox()"
-    role="dialog"
-    aria-modal="true"
-  >
+  <!-- LIGHTBOX -->
+<div
+  class="lightbox"
+  *ngIf="lightboxOpen()"
+  (click)="closeLightbox()"
+  role="dialog"
+  aria-modal="true"
+  tabindex="-1"
+>
     <div class="lightbox__inner" (click)="$event.stopPropagation()">
-      <img [src]="lightboxSrc()" [alt]="lightboxAlt()" (error)="imgFallback($event)" />
+      <img [src]="lightboxSrc()" [alt]="lightboxAlt()" />
       <button class="lightbox__close" type="button" (click)="closeLightbox()">
         Cerrar
       </button>
     </div>
   </div>
+
 </section>

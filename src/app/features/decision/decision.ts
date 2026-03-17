@@ -11,9 +11,12 @@ type WearState = 'E1' | 'E2' | 'E3' | 'E4' | 'E5';
 type DecisionRow = {
   state: WearState;
   scenarioId: string;
-  nc: number;       // %
-  fill: number;     // %
+  nc: number;
+  fill: number;
   rangeText: string;
+
+  min: number;
+  max: number;
 };
 
 @Component({
@@ -42,7 +45,19 @@ export class DecisionComponent {
   // Rangos globales
   readonly minH = 51;
   readonly maxH = 229;
+  // Tabla de rango
+private readonly decisionTable: DecisionRow[] = [
+  { state: 'E1', scenarioId: 'E1-V2-L2', nc: 65, fill: 25, rangeText: '229 ≥ H > 206 mm', min: 206, max: 229 },
+  { state: 'E2', scenarioId: 'E2-V2-L3', nc: 65, fill: 30, rangeText: '206 ≥ H > 162 mm', min: 162, max: 206 },
+  { state: 'E3', scenarioId: 'E3-V3-L4', nc: 70, fill: 35, rangeText: '162 ≥ H > 118 mm', min: 118, max: 162 },
+  { state: 'E4', scenarioId: 'E4-V3-L5', nc: 70, fill: 40, rangeText: '118 ≥ H > 73 mm',  min: 73,  max: 118 },
+  { state: 'E5', scenarioId: 'E5-V3-L5', nc: 70, fill: 40, rangeText: '73 ≥ H ≥ 51 mm',   min: 51,  max: 73  },
+] as const;
 
+
+private findRow(h: number): DecisionRow | null {
+  return this.decisionTable.find(r => h <= r.max && h >= r.min) ?? null;
+}
   get rangeText(): string {
     return `${this.minH}–${this.maxH} mm`;
   }
@@ -72,14 +87,26 @@ export class DecisionComponent {
       this.error = 'Ingresa un valor válido de H (mm).';
       return;
     }
+if (h < this.minH) {
+  this.error =
+    `Espesor crítico. H = ${h} mm es menor al límite mínimo (${this.minH} mm). ` +
+    `Se recomienda programar el cambio del revestimiento (estado E5 – crítico).`;
+  return;
+}
 
-    if (h < this.minH || h > this.maxH) {
-      this.error = `H debe estar entre ${this.minH} y ${this.maxH} mm.`;
-      return;
-    }
+if (h > this.maxH) {
+  this.error =
+    `El valor ingresado (${h} mm) excede el espesor nominal sin desgaste del lifter bajo (${this.maxH} mm). ` +
+    `Verifique la medición.`;
+  return;
+}
 
-    const state = this.mapState(h);
-    this.row = this.mapRecommendation(state);
+this.row = this.findRow(h);
+
+if (!this.row) {
+  this.error = 'No se pudo determinar el estado.';
+}
+
   }
 
   clear(): void {
@@ -106,32 +133,9 @@ export class DecisionComponent {
     return Math.round(n);
   }
 
-  private mapState(h: number): WearState {
 
-    // E1: 229 ≥ H > 206
-    // E2: 206 ≥ H > 162
-    // E3: 162 ≥ H > 118
-    // E4: 118 ≥ H > 73
-    // E5: 73 ≥ H ≥ 51
-    if (h <= 229 && h > 206) return 'E1';
-    if (h <= 206 && h > 162) return 'E2';
-    if (h <= 162 && h > 118) return 'E3';
-    if (h <= 118 && h > 73) return 'E4';
-    return 'E5';
 
-  }
 
-  private mapRecommendation(state: WearState): DecisionRow {
-    // Recomendación
-    const table: Record<WearState, DecisionRow> = {
-      E1: { state: 'E1', scenarioId: 'E1-V2-L2', nc: 65, fill: 25, rangeText: '229 ≥ H > 206 mm' },
-      E2: { state: 'E2', scenarioId: 'E2-V2-L3', nc: 65, fill: 30, rangeText: '206 ≥ H > 162 mm' },
-      E3: { state: 'E3', scenarioId: 'E3-V3-L4', nc: 70, fill: 35, rangeText: '162 ≥ H > 118 mm' },
-      E4: { state: 'E4', scenarioId: 'E4-V3-L5', nc: 70, fill: 40, rangeText: '118 ≥ H > 73 mm' },
-      E5: { state: 'E5', scenarioId: 'E5-V3-L5', nc: 70, fill: 40, rangeText: '73 ≥ H ≥ 51 mm' },
-    };
-    return table[state];
-  }
 
   stateLabel(state?: string | null): string {
     switch (state) {
@@ -158,3 +162,5 @@ closeLightbox() {
 }
 
 }
+
+

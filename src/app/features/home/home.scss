@@ -240,47 +240,48 @@
    Mobile – Grid compacto
 ========================= */
 
-@media (max-width: 640px){
+@media (max-width: 640px) {
 
-  .kpis{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+  .hero__cta {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
   }
 
-  .kpi{
-    min-height: 95px;
-    padding: 10px;
+  .cta-btn {
+    width: auto;
+    padding: 8px 14px;
+    font-size: 12px;
+    border-radius: 12px;
   }
 
-  .kpi__title{
-    font-size: 10.5px;
+  .cta-btn--green {
+    box-shadow: 0 8px 20px rgba(34,197,94,.18);
   }
 
-  .kpi__value{
-    font-size: 20px;
-    margin: 4px 0;
-  }
-
-  .kpi__subtitle{
-    font-size: 10.5px;
-    line-height: 1.2;
+  .mini-link {
+    width: auto;
+    padding: 6px 10px;
+    font-size: 11px;
   }
 
 }
-
 /* =========================
    Mobile pequeño
 ========================= */
+@media (max-width: 480px) {
 
-@media (max-width: 420px){
-
-  .kpis{
-    grid-template-columns: 1fr;
+  .cta-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+    border-radius: 10px;
+    box-shadow: none;
   }
 
-  .kpi{
-    min-height: 85px;
+  .mini-link {
+    padding: 5px 9px;
+    font-size: 10.5px;
   }
 
 }
