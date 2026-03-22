@@ -3,7 +3,7 @@ import {
   TrackByFunction,
   computed,
   inject,
-  signal,Injectable,
+  signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -150,20 +150,117 @@ type Stage6RowVM = {
   styleUrls: ['./procedimiento.scss'],
 })
 export class ProcedimientoComponent {
-  private http = inject(HttpClient);
-  private sanitizer = inject(DomSanitizer);
-  private generalStore = inject(GeneralStore);
-  private stage2Store = inject(Stage2KpiStore);
-  private stage45Store = inject(Stage45Store);
+  // ==========================================================
+// INYECCIONES Y SEÑALES BASE
+// ==========================================================
+private http = inject(HttpClient);
+private sanitizer = inject(DomSanitizer);
+private generalStore = inject(GeneralStore);
+private stage2Store = inject(Stage2KpiStore);
+private stage45Store = inject(Stage45Store);
 private stage3Store = inject(Stage3FemStore);
-
 private router = inject(Router);
 
 
+// ==========================================================
+// ETAPA 1 — DESGASTE ACTIVO
+// ==========================================================
+  readonly stage1Raw = toSignal(
+    this.http.get<Stage1WearJson>('assets/data/stage1.wear.json'),
+    { initialValue: null }
+  );
+  readonly stage1Item = computed<Stage1WearItem | null>(() => {
+    const raw = this.stage1Raw();
+   const rawObj = raw as Record<string, any>;
+const items = rawObj['items'] ?? rawObj ?? {};
 
-  readonly generalMap = toSignal(this.generalStore.map$, {
-    initialValue: {} as Record<string, any>,
+    const firstKey = Object.keys(items)[0];
+    return firstKey ? items[firstKey] : null;
   });
+  readonly stage1EmbedUrl = computed<SafeResourceUrl | null>(() => {
+    const url = this.stage1Item()?.wearVideoDefault ?? '';
+    if (!url) return null;
+
+    const u = String(url);
+    const m1 = u.match(/youtu\.be\/([A-Za-z0-9_-]{6,})/);
+    const m2 = u.match(/[?&]v=([A-Za-z0-9_-]{6,})/);
+    const id = m1?.[1] ?? m2?.[1] ?? '';
+    if (!id) return null;
+
+    return this.sanitizer.bypassSecurityTrustResourceUrl(
+      `https://www.youtube.com/embed/${id}`
+    );
+  });
+  readonly stage1States = computed(() => {
+    const item = this.stage1Item();
+    if (!item) return [];
+
+    const all: Stage1WearTransition[] = [item.base, ...(item.transitions ?? [])];
+
+    const pctOf = (t: string) => {
+      const k = String(t).toUpperCase();
+      if (k === 'E1') return 0;
+      if (k === 'E2') return 25;
+      if (k === 'E3') return 50;
+      if (k === 'E4') return 75;
+      if (k === 'E5') return 100;
+      return null;
+    };
+
+    const order = new Map([['E1', 1], ['E2', 2], ['E3', 3], ['E4', 4], ['E5', 5]]);
+
+    return all
+      .map((tr) => ({
+        state: tr.transition,
+        wearPct: pctOf(tr.transition),
+        dH_mm: tr.dH_mm,
+        v_mm_h: tr.v_mm_h,
+       t_months: tr.transition === 'E1' ? 0 : tr.t_months,
+
+        img: this.toAssetUrl(tr.statesImage),
+      }))
+      .sort((a, b) => (order.get(a.state) ?? 99) - (order.get(b.state) ?? 99));
+  });
+  readonly stage1Summary = computed(() => {
+    const item = this.stage1Item();
+    const states = this.stage1States();
+    if (!item || states.length === 0) return [];
+
+    const total = Number(item.totalTime_months ?? 6);
+    let acc = 0;
+
+    const rows = states.map((s, idx) => {
+      const delta = idx === 0 ? 0 : Number(s.t_months ?? 0);
+      if (idx === 0) acc = 0;
+      else acc += delta;
+
+      return {
+        state: s.state,
+        dH_mm: s.dH_mm,
+        v_mm_h: s.v_mm_h,
+        deltaMonths: delta,
+        accMonths: acc,
+      };
+    });
+
+    if (rows.length > 1) {
+      const last = rows[rows.length - 1];
+      const diff = total - last.accMonths;
+      if (Math.abs(diff) > 0.005) last.accMonths = total;
+    }
+
+    return rows;
+  });
+   imgFallback(ev: Event) {
+    const img = ev.target as HTMLImageElement | null;
+    if (!img) return;
+    if (img.src.includes('/assets/branding/molino-sag-v2.png')) return;
+    img.src = '/assets/branding/molino-sag-v2.png';
+  }
+
+// ==========================================================
+// ETAPA 2 — DEM SCREENING
+// ==========================================================
   readonly stage2Map = toSignal(this.stage2Store.map$, {
     initialValue: {} as Record<string, any>,
   });
@@ -195,20 +292,6 @@ readonly stage2RowsOrdered = computed(() => {
       };
     });
 });
-
-
-  readonly stage45Map = toSignal(this.stage45Store.map$, {
-    initialValue: {} as Record<string, any>,
-  });
-
-
-  readonly stage1Raw = toSignal(
-    this.http.get<Stage1WearJson>('assets/data/stage1.wear.json'),
-    { initialValue: null }
-  );
-
-
-  readonly stage = signal<StageKey>(1);
 readonly stage2SelectedId = signal<string | null>(null);
 
 readonly stage2Selected = computed<Stage2Detail | null>(() => {
@@ -235,14 +318,6 @@ readonly stage2Selected = computed<Stage2Detail | null>(() => {
     anglesImage: gMap[id]?.anglesImage ?? null,
   };
 });
-
-
-goToScenario(id: string) {
-  if (!id) return;
-  this.router.navigate(['/escenario', id]);
-}
-
-
 closeStage2Card() {
   this.stage2SelectedId.set(null);
 }
@@ -262,249 +337,9 @@ readonly stage2EmbedUrl = computed<SafeResourceUrl | null>(() => {
     `https://www.youtube.com/embed/${id}`
   );
 });
-
-  // Hero
-  readonly heroActions = [
-    { label: 'Usar herramienta de decisión', link: '/decision', variant: 'cta' as const },
-    { label: 'Ver biblioteca', link: '/biblioteca', variant: 'ghost' as const },
-  ];
-
-  readonly stageTabs = [
-    { key: 1 as const, title: 'Etapa 1', sub: 'Desgaste activo → estados E1–E5' },
-    { key: 2 as const, title: 'Etapa 2', sub: 'DEM sin rotura → screening y ganadores' },
-    { key: 3 as const, title: 'Etapa 3', sub: 'FEM → verificación estructural' },
-    { key: 4 as const, title: 'Etapa 4', sub: 'Desgaste (velocidad) → validación' },
-    { key: 5 as const, title: 'Etapa 5', sub: 'Rotura + productividad' },
-    { key: 6 as const, title: 'Etapa 6', sub: 'Evaluación final' },
-  ];
-  readonly wDesg = 0.35;
-readonly wT = 0.30;
-readonly wP80 = 0.20;
-readonly wEcs = 0.15;
-readonly stage6Evaluados = computed(() => this.stage6Rows().length);
-readonly stage6Ganadores = computed(() => this.stage6Rows().filter(x => x.isWinner).length);
-
-  setStage(s: StageKey) {
-    this.stage.set(s);
-    setTimeout(() => {
-      document.getElementById('stageTop')?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }, 0);
-  }
-
-  // ---------------- KPI / winners ----------------
-  readonly totalDem = computed(() => Object.keys(this.generalMap() ?? {}).length);
-
-  private normId(id: any): string {
-    return String(id ?? '')
-      .trim()
-      .replace(/[–—]/g, '-')
-      .replace(/\s+/g, '')
-      .toUpperCase();
-  }
-
-  private extractWinnerIdsFromRecord(raw: Record<string, any> | null | undefined): Set<string> {
-    const set = new Set<string>();
-    if (!raw) return set;
-
-    for (const [k, v] of Object.entries(raw)) {
-      const obj = (v ?? {}) as Record<string, any>;
-      const id = this.normId(obj['scenarioId'] ?? k);
-
-      const comment = String(
-        obj['comment'] ??
-          obj['comments'] ??
-          obj['notes'] ??
-          obj['nota'] ??
-          obj['observacion'] ??
-          obj['observación'] ??
-          ''
-      )
-        .toLowerCase()
-        .trim();
-
-      const winnerBool =
-        obj['winner'] === true ||
-        obj['isWinner'] === true ||
-        (obj['stage2'] && obj['stage2']['winner'] === true) ||
-        (obj['stage5'] && obj['stage5']['winner'] === true);
-
-      if (comment.includes('ganador') || winnerBool) set.add(id);
-    }
-
-    return set;
-  }
-
-  readonly finalWinners = computed(() => this.extractWinnerIdsFromRecord(this.stage45Map()));
-  readonly stage2Winners = computed(() => {
-    const s2 = this.extractWinnerIdsFromRecord(this.stage2Map());
-    const fin = this.finalWinners();
-    for (const id of fin) s2.add(id);
-    return s2;
-  });
-
-  readonly finalWinnerIds = computed(() => Array.from(this.finalWinners()).sort());
-
-  readonly kpis = computed<TopKpi[]>(() => {
-    const totalDem = this.totalDem() || 31;
-    const stage2Count = this.stage2Winners().size || 10;
-    const finalCount = this.finalWinners().size || 5;
-
-
-    const fem = 11;
-    const dem4 = 11;
-    const dem5 = Object.keys(this.stage45Map() ?? {}).length || 11;
-
-    return [
-      { title: 'Estados Desgastado (Etapa 1)', value: '5', subtitle: 'E1–E5 (DEM, desgaste activo, 1300 s)' },
-      { title: 'Simulaciones DEM (Etapa 2)', value: String(totalDem), subtitle: 'Exploración operacional (sin rotura ni desgaste)' },
-      { title: 'Ganadores Etapa 2', value: String(stage2Count), subtitle: 'Selección por indicador global' },
-      { title: 'Casos FEM (Etapa 3)', value: String(fem), subtitle: 'ANSYS Mechanical (10 ganadores + base)' },
-      { title: 'Casos DEM (Etapa 4)', value: String(dem4), subtitle: 'Desgaste activo (velocidad de desgaste)' },
-      { title: 'Casos DEM (Etapa 5)', value: String(dem5), subtitle: 'Rotura activa (sin desgaste activo)' },
-      { title: 'Ganadores finales (Etapa 6)', value: String(finalCount), subtitle: this.finalWinnerIds().join(' · ') || '—' },
-    ];
-  });
-
-  trackKpi: TrackByFunction<TopKpi> = (_i, k) => k.title;
-  trackId: TrackByFunction<string> = (_i, x) => x;
-
-  // ---------------- Stage 1 (video + estados + tabla) ----------------
-
-
-  readonly stage1Item = computed<Stage1WearItem | null>(() => {
-    const raw = this.stage1Raw();
-   const rawObj = raw as Record<string, any>;
-const items = rawObj['items'] ?? rawObj ?? {};
-
-    const firstKey = Object.keys(items)[0];
-    return firstKey ? items[firstKey] : null;
-  });
-
-
-  private toAssetUrl(p: any): string {
-    const s = String(p ?? '').trim();
-    if (!s) return 'assets/branding/molino-sag-v2.png';
-
-    if (/^https?:\/\//i.test(s)) return s;
-
-
-    if (s.startsWith('//')) return s.replace(/^\/+/, '/');
-
-    if (s.startsWith('/assets/')) return s;
-    if (s.startsWith('assets/')) return '/' + s;
-    if (s.startsWith('/')) return s;
-
-    return '/assets/' + s;
-  }
-
-  assetUrl(p?: string | null): string {
-  if (!p) return '';
-
-  return p.replace(/^\/+/, '');
-}
-  readonly stage1EmbedUrl = computed<SafeResourceUrl | null>(() => {
-    const url = this.stage1Item()?.wearVideoDefault ?? '';
-    if (!url) return null;
-
-    const u = String(url);
-    const m1 = u.match(/youtu\.be\/([A-Za-z0-9_-]{6,})/);
-    const m2 = u.match(/[?&]v=([A-Za-z0-9_-]{6,})/);
-    const id = m1?.[1] ?? m2?.[1] ?? '';
-    if (!id) return null;
-
-    return this.sanitizer.bypassSecurityTrustResourceUrl(
-      `https://www.youtube.com/embed/${id}`
-    );
-  });
-
-  readonly stage1States = computed(() => {
-    const item = this.stage1Item();
-    if (!item) return [];
-
-    const all: Stage1WearTransition[] = [item.base, ...(item.transitions ?? [])];
-
-    const pctOf = (t: string) => {
-      const k = String(t).toUpperCase();
-      if (k === 'E1') return 0;
-      if (k === 'E2') return 25;
-      if (k === 'E3') return 50;
-      if (k === 'E4') return 75;
-      if (k === 'E5') return 100;
-      return null;
-    };
-
-    const order = new Map([['E1', 1], ['E2', 2], ['E3', 3], ['E4', 4], ['E5', 5]]);
-
-    return all
-      .map((tr) => ({
-        state: tr.transition,
-        wearPct: pctOf(tr.transition),
-        dH_mm: tr.dH_mm,
-        v_mm_h: tr.v_mm_h,
-       t_months: tr.transition === 'E1' ? 0 : tr.t_months,
-
-        img: this.toAssetUrl(tr.statesImage),
-      }))
-      .sort((a, b) => (order.get(a.state) ?? 99) - (order.get(b.state) ?? 99));
-  });
-
-
-  readonly stage1Summary = computed(() => {
-    const item = this.stage1Item();
-    const states = this.stage1States();
-    if (!item || states.length === 0) return [];
-
-    const total = Number(item.totalTime_months ?? 6);
-    let acc = 0;
-
-    const rows = states.map((s, idx) => {
-      const delta = idx === 0 ? 0 : Number(s.t_months ?? 0);
-      if (idx === 0) acc = 0;
-      else acc += delta;
-
-      return {
-        state: s.state,
-        dH_mm: s.dH_mm,
-        v_mm_h: s.v_mm_h,
-        deltaMonths: delta,
-        accMonths: acc,
-      };
-    });
-
-    if (rows.length > 1) {
-      const last = rows[rows.length - 1];
-      const diff = total - last.accMonths;
-      if (Math.abs(diff) > 0.005) last.accMonths = total;
-    }
-
-    return rows;
-  });
-
-  imgFallback(ev: Event) {
-    const img = ev.target as HTMLImageElement | null;
-    if (!img) return;
-    if (img.src.includes('/assets/branding/molino-sag-v2.png')) return;
-    img.src = '/assets/branding/molino-sag-v2.png';
-  }
-  readonly previewImg = signal<string | null>(null);
-readonly previewTitle = signal<string>('');
-
-openPreview(imgPath: string | null | undefined, title?: string) {
-  const url = this.asAssetUrl(imgPath);
-  if (!url) return;
-  this.previewImg.set(url);
-  this.previewTitle.set(title ?? '');
-}
-
-
-closePreview() {
-  this.previewImg.set(null);
-  this.previewTitle.set('');
-}
-// Etapa 3
+// ==========================================================
+// ETAPA 3 — FEM
+// ==========================================================
 
 readonly stage3Map = toSignal(this.stage3Store.map$, {
   initialValue: {} as Record<string, Stage3FemRow>,
@@ -519,34 +354,6 @@ readonly stage3Rows = computed<Stage3FemRow[]>(() => {
 
 readonly femYieldMPa = 800;
 
-
-
-
-goScenario(id: string) {
-  if (!id) return;
-  this.router.navigate(['/escenario', id]);
-}
-
-
-
-
-
-
-asAssetUrl(path: string | null | undefined): string | null {
-  if (!path) return null;
-
-  const p = String(path).trim();
-  if (!p) return null;
-
-
-  if (p.startsWith('http://') || p.startsWith('https://')) return p;
-
-
-  return p.replace(/^\/+/, '');
-}
-
-trackScenarioId = (_: number, r: { scenarioId: string }) => r.scenarioId;
-
 hasStage3Comments = () => {
   const rows = this.stage3Rows?.() ?? [];
   return rows.some((r: any) => (r?.comment ?? '').toString().trim().length > 0);
@@ -554,56 +361,9 @@ hasStage3Comments = () => {
 
 trackByScenarioId = (_: number, r: Stage3FemRow) => r.scenarioId;
 
-//Etapa 4 y 5
-
-private pickNumber(obj: any, keys: string[]): number | null {
-  if (!obj) return null;
-  for (const k of keys) {
-    const v = obj[k];
-    const n = Number(v);
-    if (!isNaN(n)) return n;
-  }
-  return null;
-}
-
-private pickString(obj: any, keys: string[]): string | null {
-  if (!obj) return null;
-  for (const k of keys) {
-    const v = obj[k];
-    if (typeof v === 'string' && v.trim()) return v.trim();
-  }
-  return null;
-}
-
-private isScenarioId(id: string): boolean {
-  return /^E[1-5]-V\d-L\d$/i.test(id.trim());
-}
-
-
-private toNum(v: any): number | null {
-  const n = typeof v === 'string' ? Number(v) : typeof v === 'number' ? v : NaN;
-  return Number.isFinite(n) ? n : null;
-}
-
-
-
-private pickStr(obj: any, keys: string[]): string | null {
-  if (!obj) return null;
-  for (const k of keys) {
-    const v = obj[k];
-    if (typeof v === 'string' && v.trim()) return v.trim();
-  }
-  return null;
-}
-
-private extractItemsFromStage45(raw: any): any[] {
-  if (!raw) return [];
-
-  const items = raw.items ?? raw;
-  if (Array.isArray(items)) return items;
-  if (items && typeof items === 'object') return Object.values(items);
-  return [];
-}
+// ==========================================================
+// ETAPA 4 — DESGASTE VALIDACIÓN
+// ==========================================================
 
 
 readonly stage4Rows = computed<Stage4RowVM[]>(() => {
@@ -677,7 +437,9 @@ asYouTubeEmbed(url: string | null): any {
   const embed = `https://www.youtube.com/embed/${id}`;
   return this.sanitizer.bypassSecurityTrustResourceUrl(embed);
 }
-
+// ==========================================================
+// ETAPA 5 — PRODUCTIVIDAD + ROTURA
+// ==========================================================
 
 readonly stage5RepVideo = computed<string | null>(() => {
   const m = this.stage45Map?.() as any;
@@ -690,12 +452,12 @@ readonly stage5Rows = computed<Stage5RowVM[]>(() => {
   const raw = (this.stage45Map?.() as any) ?? {};
   const values = Object.values(raw) as any[];
 
-  const isScenarioId = (s: string) => /^E[1-5]-V\d-L\d$/i.test(s.trim());
+
 
   return values
     .map((r: any): Stage5RowVM | null => {
       const id = String(r?.scenarioId ?? r?.Escenario ?? r?.id ?? '').trim();
-      if (!id || !isScenarioId(id)) return null;
+      if (!this.isScenarioId(id)) return null;
 
       const capacity = (typeof r?.capacity_tph === 'number') ? r.capacity_tph : null;
       const ecs = (typeof r?.ecs_kWh_t === 'number') ? r.ecs_kWh_t : null;
@@ -731,30 +493,235 @@ const power = Number(
     })
     .filter((x): x is Stage5RowVM => !!x);
 });
+// ==========================================================
+// ETAPA 6 — EVALUACIÓN FINAL
+// ==========================================================
+readonly wDesg = 0.35;
+readonly wT = 0.30;
+readonly wP80 = 0.20;
+readonly wEcs = 0.15;
+readonly stage6Evaluados = computed(() => this.stage6Rows().length);
+readonly stage6Ganadores = computed(() => this.stage6Rows().filter(x => x.isWinner).length);
 
-//Etapa 6
-private pickNum(obj: any, keys: string[]): number | null {
-  for (const k of keys) {
-    const v = obj?.[k];
-    if (typeof v === 'number' && Number.isFinite(v)) return v;
-    const n = Number(v);
-    if (v != null && Number.isFinite(n)) return n;
+  private extractWinnerIdsFromRecord(raw: Record<string, any> | null | undefined): Set<string> {
+    const set = new Set<string>();
+    if (!raw) return set;
+
+    for (const [k, v] of Object.entries(raw)) {
+      const obj = (v ?? {}) as Record<string, any>;
+      const id = this.normId(obj['scenarioId'] ?? k);
+
+      const comment = String(
+        obj['comment'] ??
+          obj['comments'] ??
+          obj['notes'] ??
+          obj['nota'] ??
+          obj['observacion'] ??
+          obj['observación'] ??
+          ''
+      )
+        .toLowerCase()
+        .trim();
+
+      const winnerBool =
+        obj['winner'] === true ||
+        obj['isWinner'] === true ||
+        (obj['stage2'] && obj['stage2']['winner'] === true) ||
+        (obj['stage5'] && obj['stage5']['winner'] === true);
+
+      if (comment.includes('ganador') || winnerBool) set.add(id);
+    }
+
+    return set;
   }
+  readonly finalWinners = computed(() => this.extractWinnerIdsFromRecord(this.stage45Map()));
+  readonly kpis = computed<TopKpi[]>(() => {
+    const totalDem = this.totalDem() || 31;
+    const stage2Count = this.stage2Winners().size || 10;
+    const finalCount = this.finalWinners().size || 5;
+
+
+    const fem = 11;
+    const dem4 = 11;
+    const dem5 = Object.keys(this.stage45Map() ?? {}).length || 11;
+
+    return [
+      { title: 'Estados Desgastado (Etapa 1)', value: '5', subtitle: 'E1–E5 (DEM, desgaste activo, 1300 s)' },
+      { title: 'Simulaciones DEM (Etapa 2)', value: String(totalDem), subtitle: 'Exploración operacional (sin rotura ni desgaste)' },
+      { title: 'Ganadores Etapa 2', value: String(stage2Count), subtitle: 'Selección por indicador global' },
+      { title: 'Casos FEM (Etapa 3)', value: String(fem), subtitle: 'ANSYS Mechanical (10 ganadores + base)' },
+      { title: 'Casos DEM (Etapa 4)', value: String(dem4), subtitle: 'Desgaste activo (velocidad de desgaste)' },
+      { title: 'Casos DEM (Etapa 5)', value: String(dem5), subtitle: 'Rotura activa (sin desgaste activo)' },
+      { title: 'Ganadores finales (Etapa 6)', value: String(finalCount), subtitle: this.finalWinnerIds().join(' · ') || '—' },
+    ];
+  });
+// ========================
+// HELPERS COMUNES
+// ========================
+
+private pickNumber(obj: any, keys: string[]): number | null {
+  if (!obj) return null;
+
+  for (const k of keys) {
+    const v = obj[k];
+    const n = Number(v);
+    if (Number.isFinite(n)) return n;
+  }
+
   return null;
 }
 
+private pickString(obj: any, keys: string[]): string | null {
+  if (!obj) return null;
+
+  for (const k of keys) {
+    const v = obj[k];
+    if (typeof v === 'string' && v.trim()) return v.trim();
+  }
+
+  return null;
+}
+
+private isScenarioId(id: string): boolean {
+  return /^E[1-5]-V\d-L\d$/i.test(id.trim());
+}
+
+// ==========================================================
+// STRATEGY ADAPTATIVA
+// ==========================================================
+
+
+
+  readonly generalMap = toSignal(this.generalStore.map$, {
+    initialValue: {} as Record<string, any>,
+  });
+
+
+
+  readonly stage45Map = toSignal(this.stage45Store.map$, {
+    initialValue: {} as Record<string, any>,
+  });
+
+  readonly stage = signal<StageKey>(1);
+
+private strategyAdaptiveStore = inject(StrategyAdaptiveStore);
+
+readonly strategyTransitions = toSignal(this.strategyAdaptiveStore.transitions$, {
+  initialValue: [] as StrategyAdaptiveTransitionRow[],
+});
+
+readonly strategySummary = toSignal(this.strategyAdaptiveStore.summary$, {
+  initialValue: null as StrategyAdaptiveSummary | null,
+});
+trackTransition = (_: number, r: StrategyAdaptiveTransitionRow) => r.transition;
+goToScenario(id: string) {
+  if (!id) return;
+  this.router.navigate(['/escenario', id]);
+}
+  // Hero
+  readonly heroActions = [
+    { label: 'Usar herramienta de decisión', link: '/decision', variant: 'cta' as const },
+    { label: 'Ver biblioteca', link: '/biblioteca', variant: 'ghost' as const },
+  ];
+
+  readonly stageTabs = [
+    { key: 1 as const, title: 'Etapa 1', sub: 'Desgaste activo → estados E1–E5' },
+    { key: 2 as const, title: 'Etapa 2', sub: 'DEM sin rotura → screening y ganadores' },
+    { key: 3 as const, title: 'Etapa 3', sub: 'FEM → verificación estructural' },
+    { key: 4 as const, title: 'Etapa 4', sub: 'Desgaste (velocidad) → validación' },
+    { key: 5 as const, title: 'Etapa 5', sub: 'Rotura + productividad' },
+    { key: 6 as const, title: 'Etapa 6', sub: 'Evaluación final' },
+  ];
+  setStage(s: StageKey) {
+    this.stage.set(s);
+    setTimeout(() => {
+      document.getElementById('stageTop')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }, 0);
+  }
+  readonly totalDem = computed(() => Object.keys(this.generalMap() ?? {}).length);
+  private normId(id: any): string {
+    return String(id ?? '')
+      .trim()
+      .replace(/[–—]/g, '-')
+      .replace(/\s+/g, '')
+      .toUpperCase();
+  }
+  readonly stage2Winners = computed(() => {
+    const s2 = this.extractWinnerIdsFromRecord(this.stage2Map());
+    const fin = this.finalWinners();
+    for (const id of fin) s2.add(id);
+    return s2;
+  });
+  readonly finalWinnerIds = computed(() => Array.from(this.finalWinners()).sort());
+  trackKpi: TrackByFunction<TopKpi> = (_i, k) => k.title;
+  trackId: TrackByFunction<string> = (_i, x) => x;
+  private toAssetUrl(p: any): string {
+    const s = String(p ?? '').trim();
+    if (!s) return 'assets/branding/molino-sag-v2.png';
+
+    if (/^https?:\/\//i.test(s)) return s;
+
+
+    if (s.startsWith('//')) return s.replace(/^\/+/, '/');
+
+    if (s.startsWith('/assets/')) return s;
+    if (s.startsWith('assets/')) return '/' + s;
+    if (s.startsWith('/')) return s;
+
+    return '/assets/' + s;
+  }
+  assetUrl(p?: string | null): string {
+  if (!p) return '';
+
+  return p.replace(/^\/+/, '');
+}
+
+  readonly previewImg = signal<string | null>(null);
+readonly previewTitle = signal<string>('');
+
+openPreview(imgPath: string | null | undefined, title?: string) {
+  const url = this.asAssetUrl(imgPath);
+  if (!url) return;
+  this.previewImg.set(url);
+  this.previewTitle.set(title ?? '');
+}
+
+closePreview() {
+  this.previewImg.set(null);
+  this.previewTitle.set('');
+}
+
+goScenario(id: string) {
+  if (!id) return;
+  this.router.navigate(['/escenario', id]);
+}
+
+asAssetUrl(path: string | null | undefined): string | null {
+  if (!path) return null;
+
+  const p = String(path).trim();
+  if (!p) return null;
+
+  if (p.startsWith('http://') || p.startsWith('https://')) return p;
+
+  return p.replace(/^\/+/, '');
+}
+trackScenarioId = (_: number, r: { scenarioId: string }) => r.scenarioId;
 readonly stage6Rows = computed<Stage6RowVM[]>(() => {
   const raw = (this.stage45Map?.() as any) ?? {};
   const values = Object.values(raw) as any[];
 
   const g: any = this.generalMap?.() ?? {};
 
-  const isScenarioId = (s: string) => /^E[1-5]-V\d-L\d$/i.test(s.trim());
+
 
   return values
     .map((r: any): Stage6RowVM | null => {
       const id = String(r?.scenarioId ?? r?.Escenario ?? r?.id ?? '').trim();
-      if (!id || !isScenarioId(id)) return null;
+     if (!this.isScenarioId(id)) return null;
 
       const scenarioGeneral = g?.[id];
 
@@ -762,25 +729,40 @@ readonly stage6Rows = computed<Stage6RowVM[]>(() => {
       const anglesImg = (scenarioGeneral?.anglesImage ?? scenarioGeneral?.angles_image ?? null) as string | null;
 
 
-      const capacity = this.pickNum(r, ['capacity_tph', 'Capacidad (t/h)', 'Capacidad', 'capacidad']);
-      const p80 = this.pickNum(r, ['p80_mm', 'P80 (mm)', 'P80', 'p80']);
-      const ecs = this.pickNum(r, ['ecs_kWh_t', 'Ecs (kW.h/t)', 'Ecs (kWh/t)', 'Ecs', 'ecs']);
+      const capacity = this.pickNumber(r, ['capacity_tph', 'Capacidad (t/h)', 'Capacidad', 'capacidad']);
+      const p80 = this.pickNumber(r, ['p80_mm', 'P80 (mm)', 'P80', 'p80']);
+      const ecs = this.pickNumber(r, ['ecs_kWh_t', 'Ecs (kW.h/t)', 'Ecs (kWh/t)', 'Ecs', 'ecs']);
 
 
-      const power = this.pickNum(scenarioGeneral, ['powerDem_kW', 'power_dem_kw', 'power_kW', 'power']);
+      const power = this.pickNumber(scenarioGeneral, ['powerDem_kW', 'power_dem_kw', 'power_kW', 'power']);
 
 
-      const vWear_mm_s = this.pickNum(r, ['vWear_mm_s', 'V_desg (mm/s)', 'V_desg', 'v_desg']);
+      const vWear_mm_s = this.pickNumber(r, ['vWear_mm_s', 'V_desg (mm/s)', 'V_desg', 'v_desg']);
       const vDesg_mm_h = (vWear_mm_s != null) ? vWear_mm_s * 3600 : null;
 
 
-      const indDesg = this.pickNum(r, ['indWear', 'indDesg', 'Ind_desg', 'I_desg', 'ind_desg']);
-     const indT    = this.pickNum(r, ['indCapacity', 'indT', 'Ind_T', 'I_T', 'ind_t']);
-      const indEcs = this.pickNum(r, ['indEcs', 'Ind_Ecs', 'I_Ecs', 'ind_ecs']);
-      const indP80 = this.pickNum(r, ['indP80', 'Ind_P80', 'I_P80', 'ind_p80']);
+      const indDesg = this.pickNumber(r, ['indWear', 'indDesg', 'Ind_desg', 'I_desg', 'ind_desg']);
+     const indT    = this.pickNumber(r, ['indCapacity', 'indT', 'Ind_T', 'I_T', 'ind_t']);
+      const indEcs = this.pickNumber(r, ['indEcs', 'Ind_Ecs', 'I_Ecs', 'ind_ecs']);
+      const indP80 = this.pickNumber(r, ['indP80', 'Ind_P80', 'I_P80', 'ind_p80']);
 
 
-      const indGlobal = this.pickNum(r, ['indGlobal', 'Ind_global', 'IG', 'ind_global']);
+ const indGlobalRaw = this.pickNumber(r, ['indGlobal', 'Ind_global', 'IG', 'ind_global']);
+
+let indGlobalCalc: number | null = null;
+
+if (
+  indDesg != null &&
+  indT != null &&
+  indP80 != null &&
+  indEcs != null
+) {
+  indGlobalCalc =
+    this.wDesg * indDesg +
+    this.wT    * indT +
+    this.wP80  * indP80 +
+    this.wEcs  * indEcs;
+}
 
       const comment = (r?.comment ?? r?.comentario ?? '');
       const isWinner = String(comment).toLowerCase().includes('ganador');
@@ -802,7 +784,7 @@ readonly stage6Rows = computed<Stage6RowVM[]>(() => {
         indEcs,
 
         power_kW: power,
-        indGlobal,
+        indGlobal: indGlobalCalc ?? indGlobalRaw,
 
         isWinner,
       };
@@ -810,17 +792,6 @@ readonly stage6Rows = computed<Stage6RowVM[]>(() => {
     .filter((x): x is Stage6RowVM => !!x);
 });
 
-//Tabla adactativa
-private strategyAdaptiveStore = inject(StrategyAdaptiveStore);
-
-readonly strategyTransitions = toSignal(this.strategyAdaptiveStore.transitions$, {
-  initialValue: [] as StrategyAdaptiveTransitionRow[],
-});
-
-readonly strategySummary = toSignal(this.strategyAdaptiveStore.summary$, {
-  initialValue: null as StrategyAdaptiveSummary | null,
-});
-
-trackTransition = (_: number, r: StrategyAdaptiveTransitionRow) => r.transition;
+trackByScenario = (_: number, r: { scenarioId: string }) => r.scenarioId;
 
 }

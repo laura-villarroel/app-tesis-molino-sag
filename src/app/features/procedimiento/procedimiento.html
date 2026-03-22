@@ -125,8 +125,10 @@
   class="stateTile"
   *ngFor="let s of stage1States()"
   (click)="openPreview(s.img, s.state + ' · ' + (s.wearPct ?? '') + '%')"
+  (keydown.enter)="openPreview(s.img, s.state + ' · ' + (s.wearPct ?? '') + '%')"
   role="button"
   tabindex="0"
+
 >
                 <div class="stateTile__img">
                   <img [src]="assetUrl(s.img)" (error)="imgFallback($event)" alt="Estado {{ s.state }}" />
@@ -317,6 +319,7 @@
             class="thumbBtn"
   type="button"
   (click)="$event.stopPropagation(); openPreview(r.anglesImage, r.scenarioId)"
+  (keydown.enter)="openPreview(r.anglesImage, r.scenarioId)"
             [disabled]="!r.anglesImage"
             title="Ver imagen"
           >
@@ -338,7 +341,7 @@
         <td>{{ r.indPot | number:'1.2-2' }}</td>
 
       <td>
-  <span class="pill" [class.pill--win]="r.comment === 'ganador'">
+  <span class="pill" [class.pill--win]="(r.comment ?? '').toLowerCase().trim() === 'ganador'">
     {{ r.comment === 'ganador' ? 'Ganador' : 'Evaluado' }}
   </span>
 </td>
@@ -394,7 +397,7 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let r of stage3Rows(); trackBy: trackScenarioId">
+        <tr *ngFor="let r of stage3Rows(); trackBy: trackByScenario">
           <td class="tdScenario">
             <button type="button" class="scenarioLink" (click)="goScenario(r.scenarioId)">
               {{ r.scenarioId }}
@@ -406,6 +409,7 @@
               type="button"
               class="thumbBtn"
               (click)="openPreview(asAssetUrl(r.stressImg), r.scenarioId)"
+              (keydown.enter)="openPreview(asAssetUrl(r.stressImg), r.scenarioId)"
               [disabled]="!r.stressImg"
               title="Ver imagen"
             >
@@ -496,7 +500,7 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let r of stage4Rows(); trackBy: trackScenarioIdStage4">
+          <tr *ngFor="let r of stage4Rows(); trackBy: trackByScenario">
             <td class="tdScenario">
               <button type="button" class="scenarioLink" (click)="goScenario(r.scenarioId)">
                 {{ r.scenarioId }}
@@ -509,6 +513,7 @@
                 class="thumbBtn"
                 [disabled]="!r.wearImg"
                 (click)="openPreview(asAssetUrl(r.wearImg), r.scenarioId)"
+                (keydown.enter)="openPreview(asAssetUrl(r.wearImg), r.scenarioId)"
                 title="Ver imagen">
                 <img *ngIf="r.wearImg" [src]="asAssetUrl(r.wearImg)" [alt]="r.scenarioId" />
                 <span *ngIf="!r.wearImg" class="muted">—</span>
@@ -519,7 +524,7 @@
             <td>{{ r.vWear_mm_h ?? '—' }}</td>
             <td>{{ r.indWear ?? '—' }}</td>
 <td>
-  <span class="pill" [class.pill--win]="r.comment === 'ganador'">
+  <span class="pill" [class.pill--win]="(r.comment ?? '').toLowerCase().trim() === 'ganador'">
     {{ r.comment === 'ganador' ? 'Ganador' : 'Evaluado' }}
   </span>
 </td>
@@ -585,7 +590,7 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let r of stage5Rows(); trackBy: trackScenarioId">
+          <tr *ngFor="let r of stage5Rows(); trackBy: trackByScenario">
             <td class="tdScenario">
               <button type="button" class="scenarioLink" (click)="goScenario(r.scenarioId)">
                 {{ r.scenarioId }}
@@ -598,6 +603,7 @@
                 class="thumbBtn"
                 [disabled]="!r.productsImg"
                 (click)="openPreview(asAssetUrl(r.productsImg), r.scenarioId + ' · Productos')"
+                (keydown.enter)="openPreview(asAssetUrl(r.productsImg), r.scenarioId + ' · Productos')"
                 title="Ver productos"
               >
                 <img *ngIf="r.productsImg" [src]="asAssetUrl(r.productsImg)" [alt]="r.scenarioId" />
@@ -635,14 +641,14 @@
 <div class="igPanel">
   <div class="igTop">
     <div class="igTitle">Indicador global</div>
-
-    <div class="igEq">
+<div class="mathBlock"><div class="igEq">
       I<sub>G</sub> =
       {{ wDesg }} I<sub>desg</sub> +
       {{ wT }} I<sub>T</sub> +
       {{ wP80 }} I<sub>P80</sub> +
       {{ wEcs }} I<sub>Ecs</sub>
     </div>
+</div>
 
     <div class="igHint">
       Indicadores normalizados entre 0 y 1. Mayor valor indica mejor desempeño integrado.
@@ -693,7 +699,7 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let r of stage6Rows(); trackBy: trackScenarioId">
+          <tr *ngFor="let r of stage6Rows(); trackBy: trackByScenario">
             <td class="tdScenario">
               <button type="button" class="scenarioLink" (click)="goScenario(r.scenarioId)">
                 {{ r.scenarioId }}
@@ -706,6 +712,7 @@
                 class="thumbBtn"
                 [disabled]="!r.anglesImg"
                 (click)="openPreview(asAssetUrl(r.anglesImg), r.scenarioId + ' · anglesImage')"
+                (keydown.enter)="openPreview(asAssetUrl(r.anglesImg), r.scenarioId + ' · anglesImage')"
                 title="Ver anglesImage"
               >
                 <img *ngIf="r.anglesImg" [src]="asAssetUrl(r.anglesImg)" [alt]="r.scenarioId" />
@@ -725,7 +732,7 @@
             <td>{{ r.ecs_kWh_t ?? '—' }}</td>
             <td>{{ r.indEcs ?? '—' }}</td>
 
-            <td>{{ r.indGlobal ?? '—' }}</td>
+           <td>{{ r.indGlobal | number:'1.2-2' }}</td>
 
            <td>
   <span class="pill" [class.pill--win]="r.isWinner">

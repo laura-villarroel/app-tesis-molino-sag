@@ -151,15 +151,11 @@
 }
 
 /* Video */
-.videoWrap {
-  border-radius: 14px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-}
+
 
 .videoWrap iframe {
   width: 100%;
-  height: 360px;
+  height: 100%;
   display: block;
 }
 
@@ -223,31 +219,18 @@
   width: 100%;
   margin-bottom: var(--scenario-gap);
 }
-.stage1Grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-@media (max-width: 980px) {
-  .stage1Grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 
 .videoWrap {
   width: 100%;
   aspect-ratio: 16 / 9;
   border-radius: 14px;
   overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.10);
 }
 
-.videoWrap iframe {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
+
+
+
 .stage1Grid {
   display: grid;
   grid-template-columns: 1.6fr 1fr;
@@ -284,18 +267,7 @@
   text-align: center;
   margin-top: 10px;
 }
-.stage2Grid {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 14px;
-  align-items: start;
-}
 
-@media (max-width: 980px) {
-  .stage2Grid {
-    grid-template-columns: 1fr;
-  }
-}
 .stage2Grid {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
@@ -351,11 +323,6 @@
   background: rgba(255,255,255,.035);
 }
 
-.valueStrong {
-  font-weight: 700;
-  letter-spacing: .2px;
-}
-
 .valueDecision {
   font-weight: 700;
   padding: 4px 10px;
@@ -365,11 +332,6 @@
   background: rgba(255,255,255,.06);
 }
 
-.rowHighlight td {
-  border-top: 1px solid rgba(255,255,255,.14);
-  border-bottom: 1px solid rgba(255,255,255,.14);
-  background: rgba(255,255,255,.045);
-}
 
 .valueStrong {
   font-weight: 800;
@@ -513,4 +475,102 @@
 
 .formulaPretty--full .term {
   padding: 4px 10px;
+}
+/* ==========================================================
+   MOBILE OPTIMIZATION (NO AFECTA DESKTOP)
+   ========================================================== */
+
+@media (max-width: 768px) {
+
+  /* Layout general */
+  .wrap {
+    padding: 12px;
+  }
+
+  .fixedTopRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Tabs → Scroll horizontal elegante */
+  .tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 6px;
+  }
+
+  .tabs::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .tab {
+    min-width: 140px;
+    flex: 0 0 auto;
+  }
+
+  /* KPIs */
+  .kpisGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kpi__value {
+    font-size: 16px;
+  }
+
+  /* Tablas */
+  .kvTable {
+    font-size: 12px;
+  }
+
+  .kvTable td {
+    padding: 6px 4px;
+  }
+
+  /* Fórmula IG */
+  .formulaPretty--full {
+    font-size: 0.85rem;
+    padding: 10px;
+  }
+
+  .formulaPretty {
+    gap: 6px;
+  }
+
+  .formulaPretty .term {
+    padding: 2px 6px;
+  }
+
+  /* Imágenes */
+  .imgCard img {
+    max-height: 260px;
+  }
+
+}
+
+/* Ultra small phones */
+@media (max-width: 480px) {
+
+  .kpisGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi {
+    padding: 10px;
+  }
+
 }
