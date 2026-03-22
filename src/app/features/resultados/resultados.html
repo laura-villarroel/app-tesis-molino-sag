@@ -18,7 +18,11 @@
 
       <!-- KPIs -->
       <div class="kpis kpis--classic">
-        <div class="kpi card" *ngFor="let k of kpis(); trackBy: trackKpi">
+     <div
+  class="kpi card"
+  [class.kpi--final]="k.title.toLowerCase().includes('final')"
+  *ngFor="let k of kpis(); trackBy: trackKpi"
+>
           <div class="kpi__title-row">
             <div class="kpi__title">{{ k.title }}</div>
             <div class="kpi__icon" aria-hidden="true">

@@ -12,7 +12,11 @@
 <section class="proc">
 
   <section class="kpis kpis--classic">
-    <div class="kpi card" *ngFor="let k of kpis(); trackBy: trackKpi">
+  <div
+  class="kpi card"
+  [class.kpi--final]="k.title.toLowerCase().includes('ganadores finales')"
+  *ngFor="let k of kpis(); trackBy: trackKpi"
+>
       <div class="kpi__title-row">
         <div class="kpi__title">{{ k.title }}</div>
 
