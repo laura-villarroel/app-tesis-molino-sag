@@ -537,4 +537,30 @@
   }
 
 }
+/* ====================================== */
+/* KPIs EN TARJETAS - SOLO MÓVIL */
+/* ====================================== */
 
+@media (max-width: 768px) {
+
+  .results .cardKpis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .results .cardKpis .kpi {
+    padding: 10px;
+    min-height: auto;
+  }
+
+  .results .cardKpis .kpi__k {
+    font-size: 12px;
+  }
+
+  .results .cardKpis .kpi__v {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+}
