@@ -16,14 +16,46 @@
       <div class="fixedTopRow">
         <div class="titleBlock">
           <h1 class="title">{{ vm.id }}</h1>
-          <div class="subtitle">
-            Panel unificado: header fijo + contenido por etapa
-          </div>
+
         </div>
 
         <a class="btn" routerLink="/biblioteca">← Volver a biblioteca</a>
       </div>
+<!-- Selector móvil -->
+<div class="tabsMobile">
 
+  <div class="tabSelect" (click)="toggleMobileMenu()">
+
+    <span>
+      {{
+        (tab$ | async) === 'general' ? 'General' :
+        (tab$ | async) === 'stage1' ? 'Etapa 1' :
+        (tab$ | async) === 'stage2' ? 'Etapa 2' :
+        (tab$ | async) === 'stage3' ? 'Etapa 3' :
+        (tab$ | async) === 'stage4' ? 'Etapa 4' :
+        (tab$ | async) === 'stage5' ? 'Etapa 5' :
+        (tab$ | async) === 'stage6' ? 'Etapa 6' :
+        'General'
+      }}
+    </span>
+
+    <span class="arrow">▾</span>
+
+  </div>
+
+  <div class="tabMenu" *ngIf="mobileMenuOpen">
+
+    <button (click)="selectMobileTab('general')">General</button>
+    <button *ngIf="vm.hasStage1" (click)="selectMobileTab('stage1')">Etapa 1</button>
+    <button *ngIf="vm.hasStage2" (click)="selectMobileTab('stage2')">Etapa 2</button>
+    <button *ngIf="vm.hasStage3" (click)="selectMobileTab('stage3')">Etapa 3</button>
+    <button *ngIf="vm.hasStage4" (click)="selectMobileTab('stage4')">Etapa 4</button>
+    <button *ngIf="vm.hasStage5" (click)="selectMobileTab('stage5')">Etapa 5</button>
+    <button *ngIf="vm.hasStage6" (click)="selectMobileTab('stage6')">Etapa 6</button>
+
+  </div>
+
+</div>
       <div class="tabs">
         <button
           class="tab"
@@ -32,7 +64,7 @@
           type="button"
         >
           <div class="tab__k">General</div>
-          <div class="tab__s">Operación + carga</div>
+          <div class="tab__s">Operación + Carga</div>
         </button>
 
         <button
@@ -43,7 +75,7 @@
           type="button"
         >
           <div class="tab__k">Etapa 1</div>
-          <div class="tab__s">Desgaste + estados</div>
+          <div class="tab__s">Desgaste + Estados</div>
         </button>
 
         <button
@@ -54,7 +86,7 @@
           type="button"
         >
           <div class="tab__k">Etapa 2</div>
-          <div class="tab__s">DEM + video</div>
+          <div class="tab__s">DEM + Video</div>
         </button>
 
 <button
@@ -74,7 +106,7 @@
   (click)="vm.hasStage4 && setTab('stage4')"
 >
   <div>Etapa 4</div>
-  <div class="muted">Desgaste + velocidad</div>
+  <div class="muted">Velocidad de Desgaste</div>
 </button>
 
 <button
@@ -174,7 +206,7 @@
         <!-- Imagen principal -->
          <ng-container *ngIf="(tab$ | async) === 'general'">
         <section class="card panel">
-          <div class="panel__title">Imagen principal (anglesImage)</div>
+          <div class="panel__title">Imagen principal (DEM)</div>
 
           <ng-container *ngIf="toAssetUrl(g(vm.general,'anglesImage','angles_image','anglesImg')) as img">
             <button
@@ -235,7 +267,7 @@
   <div class="stage1Grid">
 
     <section class="card panel">
-      <div class="panel__title">Video (caso base)</div>
+      <div class="panel__title">Video (caso base: E1-V4-L2)</div>
 
       <ng-container *ngIf="asYouTubeEmbed(vm.stage1Video) as yt; else noStage1Video">
         <div class="videoWrap">
@@ -297,7 +329,7 @@
 
     <!-- Izquierda: anglesImage (General) -->
     <section class="card panel">
-      <div class="panel__title">Imagen DEM (anglesImage)</div>
+      <div class="panel__title">Imagen DEM</div>
 
       <ng-container *ngIf="vm.stage2MainImage as img; else noAnglesImg">
         <div class="imgCard" (click)="openPreview(img, 'Etapa 2 · anglesImage')">
@@ -374,7 +406,7 @@
   <div class="stage2Grid">
     <!-- Izquierda:imagen DEM (anglesImage) -->
     <section class="card panel">
-      <div class="panel__title">Imagen DEM (anglesImage)</div>
+      <div class="panel__title">Imagen DEM</div>
 
       <ng-container *ngIf="vm.stage3MainImage as img; else noStage3MainImg">
         <div class="imgCard" (click)="openPreview(img, 'Etapa 3 · anglesImage')">
@@ -445,7 +477,7 @@
   <div class="stage2Grid">
     <!-- Izquierda: wearImage -->
     <section class="card panel">
-  <div class="panel__title">Imagen DEM (anglesImage)</div>
+  <div class="panel__title">Imagen DEM</div>
 
   <ng-container *ngIf="vm.stage4MainImage as img; else noAngles">
     <div class="imgCard" (click)="openPreview(img, 'Etapa 4 · anglesImage')">
@@ -516,7 +548,7 @@
   <div class="stage2Grid">
     <!-- Izquierda: anglesImage -->
     <section class="card panel">
-      <div class="panel__title">Imagen DEM (anglesImage)</div>
+      <div class="panel__title">Imagen DEM </div>
 
       <ng-container *ngIf="vm.stage5MainImage as img; else noStage5Img">
         <div class="imgCard" (click)="openPreview(img,'Etapa 5 · anglesImage')">
@@ -579,7 +611,7 @@
   <div class="stage2Grid">
     <!-- Izquierda: anglesImage -->
     <section class="card panel">
-      <div class="panel__title">Imagen DEM (anglesImage)</div>
+      <div class="panel__title">Imagen DEM</div>
 
       <ng-container *ngIf="vm.stage5MainImage as img; else noImg6">
         <div class="imgCard" (click)="openPreview(img,'Etapa 6 · anglesImage')">

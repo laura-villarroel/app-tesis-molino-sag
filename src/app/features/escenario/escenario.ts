@@ -355,6 +355,16 @@ if (!id) {
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
+  mobileMenuOpen = false;
+
+toggleMobileMenu() {
+  this.mobileMenuOpen = !this.mobileMenuOpen;
+}
+
+selectMobileTab(tab: TabKey) {
+  this.setTab(tab);
+  this.mobileMenuOpen = false;
+}
 // ==========================================================
 // BUILDERS — ETAPA 2
 // ==========================================================
