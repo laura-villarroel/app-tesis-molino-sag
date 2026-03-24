@@ -161,7 +161,20 @@ private stage45Store = inject(Stage45Store);
 private stage3Store = inject(Stage3FemStore);
 private router = inject(Router);
 
+mobileMenuOpen = false;
 
+toggleMobileMenu() {
+  this.mobileMenuOpen = !this.mobileMenuOpen;
+}
+
+selectMobileStage(key: StageKey) {
+  this.setStage(key);
+  this.mobileMenuOpen = false;
+}
+get currentStageTitle(): string {
+  const found = this.stageTabs.find(t => t.key === this.stage());
+  return found ? found.title : '';
+}
 // ==========================================================
 // ETAPA 1 — DESGASTE ACTIVO
 // ==========================================================

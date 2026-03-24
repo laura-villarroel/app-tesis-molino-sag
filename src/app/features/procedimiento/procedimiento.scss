@@ -1,8 +1,6 @@
 .proc {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 16px;
+
 }
 
 .proc .kpis.kpis--classic {
@@ -11,9 +9,7 @@
   gap: 16px;
 }
 
-.proc .kpis.kpis--classic > .kpi {
-  min-width: 0;
-}
+
 
 @media (max-width: 1400px) {
   .proc .kpis.kpis--classic {
@@ -61,6 +57,7 @@
   background: rgba(6, 10, 18, 0.55);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+
 }
 
 .kpi__title-row {
@@ -139,6 +136,7 @@
   cursor: pointer;
   transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
 
+
   .tab__k {
     font-weight: 900;
     font-size: 14px;
@@ -169,6 +167,7 @@
 
 .stageHead {
   margin-bottom: 12px;
+  padding: 14px;
 
   .h3 {
     margin: 0 0 6px 0;
@@ -592,10 +591,20 @@
 }
 
 .rankingTable th {
-  background: rgba(0, 255, 150, 0.12);
+
   color: var(--accent);
   padding: 10px;
   text-align: left;
+  font-size: 0.85rem;
+    letter-spacing: 0.3px;
+    padding: 10px 8px;
+     background: linear-gradient(
+    90deg,
+    rgba(0, 220, 140, 0.16),
+    rgba(6, 10, 18, 0.92)
+  );
+  color: rgba(235, 255, 248, 0.92);
+  border-bottom: 1px solid rgba(0, 220, 140, 0.18);
 }
 
 .rankingTable td {
@@ -611,15 +620,6 @@
   font-size: 12px;
 }
 
-.rankingTable th {
-  background: linear-gradient(
-    90deg,
-    rgba(0, 220, 140, 0.16),
-    rgba(6, 10, 18, 0.92)
-  );
-  color: rgba(235, 255, 248, 0.92);
-  border-bottom: 1px solid rgba(0, 220, 140, 0.18);
-}
 
 
 .tImg {
@@ -1464,6 +1464,7 @@
 .cardTitle {
   font-weight: 700;
   letter-spacing: .2px;
+   padding: 16px;
 }
 
 .card:hover {
@@ -1571,8 +1572,7 @@
   color: #ffffff;
 }
 /* =========================================================
-   MOBILE OPTIMIZATION LAYER
-   (NO ROMPE DESKTOP)
+   MOBILE
 ========================================================= */
 
 @media (max-width: 900px) {
@@ -1659,4 +1659,277 @@
   width: 120px !important;
   min-width: 120px !important;
   white-space: nowrap !important;
+}
+
+
+.tabsMobile {
+  display: none;
+}
+
+
+/* =========================
+   Mobile Stage Selector
+========================= */
+
+.tabsMobile {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+
+  .tabs {
+    display: none;
+  }
+
+  .tabsMobile {
+    display: block;
+    margin: 12px 0 4px;
+  }
+
+  .mobileSelect {
+    position: relative;
+  }
+
+  .mobileSelect__btn {
+    width: 100%;
+    background: linear-gradient(
+      180deg,
+      rgba(15,23,42,.95),
+      rgba(2,6,23,.95)
+    );
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 18px;
+    padding: 12px 16px;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .mobileSelect__label {
+    opacity: .95;
+  }
+
+  .mobileSelect__arrow {
+    transition: transform .2s ease;
+    opacity: .7;
+  }
+
+  .mobileSelect__arrow.isOpen {
+    transform: rotate(180deg);
+  }
+
+  .mobileSelect__menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(15,23,42,.98),
+      rgba(2,6,23,.98)
+    );
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 18px;
+    padding: 8px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.5);
+    z-index: 50;
+  }
+
+  .mobileSelect__item {
+    width: 100%;
+    text-align: left;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,.9);
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .mobileSelect__item:hover {
+    background: rgba(34,197,94,.15);
+  }
+}
+/* =========================
+   FIX OVERFLOW MOBILE
+========================= */
+
+@media (max-width: 900px) {
+
+  /* 1️⃣ Evitar que grid fuerce overflow */
+  .stageGrid,
+  .videoCard,
+  .statesCard,
+  .panel,
+  .stageContent {
+    min-width: 0;
+    width: 100%;
+  }
+
+  /* 2️⃣ Forzar contenedores internos a no romper layout */
+  .videoCard,
+  .statesCard {
+    overflow: hidden;
+  }
+
+  /* 3️⃣ Video 100% responsive */
+  .videoFrame,
+  .videoWrap {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .videoFrame iframe,
+  .videoWrap iframe {
+    width: 100%;
+    height: auto;
+  }
+
+
+  .tableWrap {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .procTable,
+  .rankingTable,
+  .stageTable,
+  .transTable {
+    min-width: 720px;
+  }
+
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+}
+.transTable th {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.th-label {
+  display: block;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.th-unit {
+  display: block;
+  font-size: 11px;
+  opacity: 0.6;
+  font-weight: 400;
+  margin-top: 2px;
+}
+/* =========================
+   SCROLL TABLAS SOLO MOBILE
+========================= */
+
+@media (max-width: 900px) {
+
+  .rankingTableWrap,
+  .tableWrap,
+  .transTableWrap {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .rankingTable,
+  .procTable,
+  .stageTable,
+  .transTable {
+    min-width: 720px;
+  }
+
+}
+
+
+.stageTable .tdScenario,
+.procTable .tdScenario,
+.rankingTable .tScenario {
+  white-space: nowrap;
+  min-width: 130px;
+}
+
+.stageTable .scenarioLink,
+.procTable .scenarioLink,
+.rankingTable .scenarioLink {
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: unset;
+}
+/* =================================
+   TABLET
+================================= */
+
+@media (max-width: 1023px) {
+
+  .rankingTable thead th {
+    font-size: 0.75rem;
+    padding: 8px 6px;
+    line-height: 1.1;
+     hyphens: auto;
+  }
+
+  .rankingTable td {
+    font-size: 0.60rem;
+    padding: 8px 6px;
+  }
+
+  .rankingTable th:first-child,
+  .rankingTable td:first-child {
+    min-width: 95px;
+  }
+
+  .rankingTable th:last-child,
+  .rankingTable td:last-child {
+    min-width: 90px;
+  }
+
+}
+/* =================================
+   MOVIL
+================================= */
+
+@media (max-width: 767px) {
+
+  .tableWrap {
+    overflow-x: auto;
+  }
+
+  .rankingTable {
+    min-width: 820px;
+  }
+
+  .rankingTable thead th {
+    font-size: 0.70rem;
+    padding: 6px 6px;
+    white-space: normal;
+    line-height: 1.05;
+     hyphens: auto;
+  }
+
+  .rankingTable td {
+    font-size: 0.60rem;
+    padding: 6px 6px;
+  }
+
+  /* Evita que Escenario se parta feo */
+  .rankingTable th:first-child,
+  .rankingTable td:first-child {
+    white-space: nowrap;
+    min-width: 100px;
+  }
+
 }

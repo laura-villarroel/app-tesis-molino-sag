@@ -53,7 +53,38 @@
         <div class="tab__s">{{ t.sub }}</div>
       </button>
     </div>
+<!-- Menú móvil -->
+<div class="tabsMobile">
+  <div class="mobileSelect">
+    <button
+      type="button"
+      class="mobileSelect__btn"
+      (click)="toggleMobileMenu()"
+    >
+      <span class="mobileSelect__label">
+        {{ currentStageTitle }}
+      </span>
 
+      <span
+        class="mobileSelect__arrow"
+        [class.isOpen]="mobileMenuOpen"
+      >
+        ▾
+      </span>
+    </button>
+
+    <div class="mobileSelect__menu" *ngIf="mobileMenuOpen">
+      <button
+        type="button"
+        class="mobileSelect__item"
+        *ngFor="let t of stageTabs"
+        (click)="selectMobileStage(t.key)"
+      >
+        {{ t.title }}
+      </button>
+    </div>
+  </div>
+</div>
     <div class="stageContent" id="stageTop">
       <!-- ETAPA 1 -->
       <ng-container *ngIf="stage() === 1">
@@ -98,11 +129,29 @@
               <table class="transTable">
                 <thead>
                   <tr>
-                    <th>Estado</th>
-                    <th>ΔH (mm)</th>
-                    <th>v (mm/h)</th>
-                    <th>Δt (meses)</th>
-                    <th>t acumulado (meses)</th>
+                 <th>
+      <span class="th-label">Estado</span>
+    </th>
+
+    <th>
+      <span class="th-label">ΔH</span>
+      <span class="th-unit">(mm)</span>
+    </th>
+
+    <th>
+      <span class="th-label">v</span>
+      <span class="th-unit">(mm/h)</span>
+    </th>
+
+    <th>
+      <span class="th-label">Δt</span>
+      <span class="th-unit">(meses)</span>
+    </th>
+
+    <th>
+      <span class="th-label">Tiempo</span>
+      <span class="th-unit">(meses)</span>
+    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -382,7 +431,7 @@
   </div>
 
   <div class="tableWrap">
-    <table class="stageTable">
+    <table class="rankingTable">
       <thead>
         <tr>
           <th class="thScenario">Escenario</th>
@@ -491,7 +540,7 @@
     <div class="cardTitle">Resumen v<sub>desg</sub> por escenario (11 casos)</div>
 
     <div class="tableWrap tableWrap--noScrollX">
-      <table class="procTable">
+      <table class="rankingTable">
         <thead>
           <tr>
             <th>Escenario</th>
@@ -580,7 +629,7 @@
     <div class="cardTitle">Resumen productivo + energético</div>
 
     <div class="tableWrap noScrollX">
-      <table class="procTable">
+      <table class="rankingTable">
         <thead>
           <tr>
             <th>Escenario</th>
@@ -679,7 +728,7 @@
     <div class="cardTitle">Resumen integrado (KPIs + indicadores + selección)</div>
 
     <div class="tableWrap">
-      <table class="procTable">
+      <table class="rankingTable">
         <thead>
           <tr>
             <th>Escenario</th>
@@ -761,7 +810,7 @@
   </div>
 
   <div class="tableWrap" style="margin-top: 10px;">
-    <table class="procTable">
+    <table class="rankingTable">
       <thead>
         <tr>
           <th>Transición</th>
