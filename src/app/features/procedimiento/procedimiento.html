@@ -89,8 +89,8 @@
       <!-- ETAPA 1 -->
       <ng-container *ngIf="stage() === 1">
         <div class="stageHead">
-          <h3 class="h3">Etapa 1 · Simulación con desgaste activo</h3>
-          <p class="p">
+          <h2 class="stageTitle">Etapa 1 · Simulación con desgaste activo</h2>
+          <p class="stageDesc">
             Los tiempos Δt corresponden al tramo desde el estado anterior (E1→E2, E2→E3, ...).
             El acumulado alcanza el tiempo total del escenario (6 meses para E1→E5).
           </p>
@@ -214,6 +214,14 @@
       </ng-container>
   <!-- ETAPA 2 -->
 <ng-container *ngIf="stage() === 2">
+   <div class="stageHead">
+    <h2 class="stageTitle">Etapa 2 · Clasificación preliminar DEM</h2>
+    <p class="stageDesc">
+      Se evaluaron 31 escenarios combinando estado (E1–E5), velocidad (V1–V5) y llenado (L1–L6).
+      Los indicadores parciales se normalizan entre 0 y 1 y se integran en un indicador global
+      para seleccionar 2 ganadores por estado.
+    </p>
+  </div>
   <div class="card block">
   <div class="cardTitle">Video representativo (caso base: E1-V4-L2)</div>
 
@@ -235,14 +243,7 @@
   </ng-template>
 </div>
 
-  <div class="stageHead">
-    <h3 class="h3">Etapa 2 · Clasificación preliminar DEM</h3>
-    <p class="p">
-      Se evaluaron 31 escenarios combinando estado (E1–E5), velocidad (V1–V5) y llenado (L1–L6).
-      Los indicadores parciales se normalizan entre 0 y 1 y se integran en un indicador global
-      para seleccionar 2 ganadores por estado.
-    </p>
-  </div>
+
 
   <!-- DEFINICIÓN MATRIZ -->
   <div class="matrixBlock">
@@ -500,7 +501,7 @@
 
       <!-- ETAPA 4 -->
 <ng-container *ngIf="stage() === 4">
-  <h2 class="stageH2">Etapa 4 · Desgaste (velocidad) — validación</h2>
+  <h2 class="stageH2">Etapa 4 · Desgaste (velocidad)</h2>
 
   <p class="stageP">
     Simulación DEM sin rotura y con desgaste activo para cuantificar la velocidad de desgaste

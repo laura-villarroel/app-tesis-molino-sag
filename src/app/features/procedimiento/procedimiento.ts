@@ -641,7 +641,7 @@ goToScenario(id: string) {
     { key: 1 as const, title: 'Etapa 1', sub: 'Desgaste activo → estados E1–E5' },
     { key: 2 as const, title: 'Etapa 2', sub: 'DEM sin rotura → screening y ganadores' },
     { key: 3 as const, title: 'Etapa 3', sub: 'FEM → verificación estructural' },
-    { key: 4 as const, title: 'Etapa 4', sub: 'Desgaste (velocidad) → validación' },
+    { key: 4 as const, title: 'Etapa 4', sub: 'Desgaste (velocidad)' },
     { key: 5 as const, title: 'Etapa 5', sub: 'Rotura + productividad' },
     { key: 6 as const, title: 'Etapa 6', sub: 'Evaluación final' },
   ];
