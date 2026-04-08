@@ -137,16 +137,6 @@ if (!this.row) {
 
 
 
-  stateLabel(state?: string | null): string {
-    switch (state) {
-      case 'E1': return '(Nuevo)';
-      case 'E2': return '(25% desgaste)';
-      case 'E3': return '(50% desgaste)';
-      case 'E4': return '(75% desgaste)';
-      case 'E5': return '(Crítico)';
-      default: return '';
-    }
-  }
   lightboxOpen = false;
 lightboxSrc = '';
 lightboxAlt = '';

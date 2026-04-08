@@ -147,28 +147,7 @@
   font-size: 12px;
 }
 
-/* KPIs compactos */
-.kpiGrid{
-  margin-top: 10px;
-  display:grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-@media (max-width: 980px){
-  .kpiGrid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 640px){
-  .kpiGrid{ grid-template-columns: 1fr; }
-}
-.kpi{
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(255,255,255,.03);
-  border-radius: 14px;
-  padding: 10px 12px;
-  min-height: 58px;
-}
-.kpi--wide{ grid-column: 1 / -1; }
-
+/* KPIs */
 .kpi__label{ font-size: 10.5px; font-weight: 900; color: rgba(229,231,235,.70); }
 .kpi__value{
   margin-top: 6px;
@@ -183,22 +162,7 @@
 .kpi__unit{ font-size: 11px; font-weight: 900; color: rgba(229,231,235,.70); }
 .kpi__sub{ font-size: 11px; font-weight: 800; color: rgba(229,231,235,.65); }
 
-/*/*
-/* ===== KPI layout por prioridad ===== */
-.kpiGrid{
-  margin-top: 10px;
-  display:grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr)); /* ✅ 4 por fila */
-  gap: 10px;
-}
-
-@media (max-width: 1100px){
-  .kpiGrid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 640px){
-  .kpiGrid{ grid-template-columns: 1fr; }
-}
-
+/* ===== KPI layout ===== */
 /* filas */
 .kpiGrid--primary{
   margin-top: 10px;
@@ -207,16 +171,7 @@
   margin-top: 8px;
 }
 
-/* KPI base (compacto) */
-.kpi{
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(255,255,255,.03);
-  border-radius: 14px;
-  padding: 10px 12px;
-  min-height: 60px;
-}
-
-/* KPI prioritario (más visible) */
+/* KPI prioritario */
 .kpi--primary{
   border-color: rgba(34,197,94,.22);
   background: linear-gradient(180deg, rgba(34,197,94,.08), rgba(255,255,255,.02));
@@ -227,38 +182,19 @@
   font-size: 16.5px;
 }
 
-/* Composición: debe caber */
-.chargeRow{
-  margin-top: 8px;
-  display:flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.chargeItem{
-  flex: 1;
-  min-width: 140px;
-  display:flex;
-  gap: 8px;
-  align-items: baseline;
-  padding: 6px 10px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.10);
-  background: rgba(0,0,0,.14);
-}
-
-/* Composición compacta */
-.chargeRow{ margin-top: 8px; display:flex; gap: 10px; flex-wrap: wrap; }
+/* Composición */
+.chargeRow{ margin-top: 6px; display:flex; gap: 8px; flex-wrap: wrap; }
 .chargeItem{
   display:flex;
   gap: 8px;
   align-items: baseline;
-  padding: 6px 10px;
-  border-radius: 12px;
+  padding: 5px 8px;
+  border-radius: 10px;
   border: 1px solid rgba(255,255,255,.10);
   background: rgba(0,0,0,.14);
 }
 .chargeName{ font-size: 11px; font-weight: 900; color: rgba(229,231,235,.70); }
-.chargeVal{ font-size: 14px; font-weight: 950; color: rgba(255,255,255,.92); }
+.chargeVal{ font-size: 13.5px; font-weight: 950; color: rgba(255,255,255,.92); }
 .chargeSub{ font-size: 10.5px; font-weight: 800; color: rgba(229,231,235,.68); }
 
 /* Meta */
@@ -436,14 +372,6 @@
   width:0%;
   background: rgba(34,197,94,.70);
 }
-kpi--wide{ padding: 10px 12px; }
-.chargeRow{ margin-top: 6px; gap: 8px; }
-.chargeItem{
-  padding: 5px 8px;
-  border-radius: 10px;
-}
-.chargeVal{ font-size: 13.5px; }
-.chargeSub{ font-size: 10.5px; }
 
 /* ===== KPI destacados: Velocidad y Llenado ===== */
 .kpi--accent{
