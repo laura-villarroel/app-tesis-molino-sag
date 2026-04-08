@@ -3,17 +3,6 @@
 }
 
 /* =========================
-   Card base
-========================= */
-
-.card {
-  border: 1px solid var(--line);
-  background: var(--card);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-}
-
-/* =========================
    HERO
 ========================= */
 
@@ -119,18 +108,6 @@
   align-items: center;
 }
 
-@media (max-width: 640px) {
-  .hero__cta {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .cta-btn,
-  .mini-link {
-    width: 100%;
-    justify-content: center;
-  }
-}
 
 /* =========================
    BUTTONS
