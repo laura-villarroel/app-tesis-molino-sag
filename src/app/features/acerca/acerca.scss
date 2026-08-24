@@ -450,3 +450,15 @@
     padding-bottom: 24px;
   }
 }
+
+/* Enlace dentro de una nota */
+.noteLink {
+  display: inline-block;
+  margin-left: .35rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  color: inherit;
+
+  &:hover { opacity: .8; }
+}

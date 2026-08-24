@@ -27,7 +27,12 @@ type Stage1WearTransition = {
   dH_mm: number;
   v_mm_h: number;
   t_months: number;
+  v_mm_s?: number;
+  t_sim_s?: number;
+  thickness_mm?: number;
   statesImage: string;
+  measureImage?: string;
+  profileImage?: string;
 };
 
 type Stage1WearItem = {
@@ -228,9 +233,13 @@ const items = rawObj['items'] ?? rawObj ?? {};
         wearPct: pctOf(tr.transition),
         dH_mm: tr.dH_mm,
         v_mm_h: tr.v_mm_h,
+        v_mm_s: tr.v_mm_s ?? null,
        t_months: tr.transition === 'E1' ? 0 : tr.t_months,
 
+        thickness_mm: tr.thickness_mm ?? null,
         img: this.toAssetUrl(tr.statesImage),
+        imgMeasure: tr.measureImage ? this.toAssetUrl(tr.measureImage) : null,
+        imgProfile: tr.profileImage ? this.toAssetUrl(tr.profileImage) : null,
       }))
       .sort((a, b) => (order.get(a.state) ?? 99) - (order.get(b.state) ?? 99));
   });
@@ -396,7 +405,7 @@ readonly stage4Rows = computed<Stage4RowVM[]>(() => {
 
     const vWear_mm_h =
       this.pickNumber(r, ['vWear_mm_h', 'v_desg_mm_h', 'vdesg_mm_h', 'v_desg (mm/h)', 'V_desg (mm/h)']) ??
-      (vWear_mm_s != null ? vWear_mm_s * 3600 : null);
+      (vWear_mm_s != null ? Math.round(vWear_mm_s * 3600 * 10) / 10 : null);
 
     const indWear =
       this.pickNumber(r, ['indWear', 'Ind_wear', 'ind_desg', 'Ind_desg', 'indDesg', 'IndDesg']) ?? null;
@@ -559,12 +568,12 @@ readonly stage6Ganadores = computed(() => this.stage6Rows().filter(x => x.isWinn
     const dem5 = Object.keys(this.stage45Map() ?? {}).length || 11;
 
     return [
-      { title: 'Estados Desgastado (Etapa 1)', value: '5', subtitle: 'E1–E5 (DEM, desgaste activo, 1300 s)' },
-      { title: 'Simulaciones DEM (Etapa 2)', value: String(totalDem), subtitle: 'Exploración operacional (sin rotura ni desgaste)' },
-      { title: 'Ganadores Etapa 2', value: String(stage2Count), subtitle: 'Selección por indicador global' },
-      { title: 'Casos FEM (Etapa 3)', value: String(fem), subtitle: 'ANSYS Mechanical (10 ganadores + base)' },
-      { title: 'Casos DEM (Etapa 4)', value: String(dem4), subtitle: 'Desgaste activo (velocidad de desgaste)' },
-      { title: 'Casos DEM (Etapa 5)', value: String(dem5), subtitle: 'Rotura activa (sin desgaste activo)' },
+      { title: 'Estados Desgastado (Etapa 1)', value: '5', subtitle: 'E1 a E5, de revestimiento nuevo a límite de recambio' },
+      { title: 'Simulaciones DEM (Etapa 2)', value: String(totalDem), subtitle: 'Bloque principal, anclado en flujos másicos' },
+      { title: 'Ganadores Etapa 2', value: String(stage2Count), subtitle: 'Los dos mejores de cada estado por índice global' },
+      { title: 'Casos FEM (Etapa 3)', value: String(fem), subtitle: 'ANSYS Mechanical, 10 preseleccionados más el caso base' },
+      { title: 'Casos DEM (Etapa 4)', value: String(dem4), subtitle: 'Desgaste activo, 100 s por escenario' },
+      { title: 'Casos DEM (Etapa 5)', value: String(dem5), subtitle: 'Rotura activa: capacidad, P80 y consumo específico' },
       { title: 'Ganadores finales (Etapa 6)', value: String(finalCount), subtitle: this.finalWinnerIds().join(' · ') || '—' },
     ];
   });

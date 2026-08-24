@@ -1933,3 +1933,44 @@
   }
 
 }
+
+/* Evidencia por estado: medición del diámetro y perfil medido (Anexo B) */
+.stateTile__evidence {
+  display: flex;
+  gap: .5rem;
+  padding: .5rem .625rem .625rem;
+  border-top: 1px solid rgba(0, 0, 0, .06);
+}
+
+.evidenceBtn {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .3rem .45rem;
+  border: 1px solid rgba(0, 0, 0, .10);
+  border-radius: .5rem;
+  background: rgba(0, 0, 0, .02);
+  cursor: pointer;
+  font: inherit;
+  font-size: .72rem;
+  color: inherit;
+  text-align: left;
+  transition: background .15s ease, border-color .15s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(0, 0, 0, .05);
+    border-color: rgba(0, 0, 0, .2);
+  }
+
+  img {
+    width: 34px;
+    height: 26px;
+    object-fit: cover;
+    border-radius: .25rem;
+    flex: 0 0 auto;
+  }
+
+  span { line-height: 1.1; }
+}

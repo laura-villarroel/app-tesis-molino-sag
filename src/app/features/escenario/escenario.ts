@@ -467,7 +467,7 @@ rows.push({ label: 'Escenario', value: sid || '—', mono: true });
     { label: 'ΔH', value: this.unit(deltaH, 'mm'), mono: true },
 
 
-    { label: 'v_desg', value: this.unit(st45?.vWear_mm_s, 'mm/s'), mono: true },
+    { label: 'v_desg', value: this.unit(st45?.vWear_mm_s, 'mm/s', 4), mono: true },
 
     { label: 'H100', value: this.unit(H100, 'mm'), mono: true },
   );
@@ -500,7 +500,7 @@ private buildStage6Rows(st45: any | null | undefined, general: any | null | unde
   rows.push({ label: 'Escenario', value: id, mono: true });
   const pDem = this.g(general, 'powerDem_kW') ?? this.g(general, 'P_Motor DEM (kW)');
   rows.push(
-    { label: 'Velocidad de desgaste', value: this.unit(st45?.vWear_mm_s, 'mm/s'), mono: true },
+    { label: 'Velocidad de desgaste', value: this.unit(st45?.vWear_mm_s, 'mm/s', 4), mono: true },
     { label: 'Indicador desgaste', value: this.num(st45?.indWear), mono: true },
 
     { label: 'Capacidad', value: this.unit(st45?.capacity_tph, 't/h'), mono: true },

@@ -47,11 +47,11 @@ export class DecisionComponent {
   readonly maxH = 229;
   // Tabla de rango
 private readonly decisionTable: DecisionRow[] = [
-  { state: 'E1', scenarioId: 'E1-V2-L2', nc: 65, fill: 25, rangeText: '229 ≥ H > 206 mm', min: 206, max: 229 },
-  { state: 'E2', scenarioId: 'E2-V2-L3', nc: 65, fill: 30, rangeText: '206 ≥ H > 162 mm', min: 162, max: 206 },
-  { state: 'E3', scenarioId: 'E3-V3-L4', nc: 70, fill: 35, rangeText: '162 ≥ H > 118 mm', min: 118, max: 162 },
-  { state: 'E4', scenarioId: 'E4-V3-L5', nc: 70, fill: 40, rangeText: '118 ≥ H > 73 mm',  min: 73,  max: 118 },
-  { state: 'E5', scenarioId: 'E5-V3-L5', nc: 70, fill: 40, rangeText: '73 ≥ H ≥ 51 mm',   min: 51,  max: 73  },
+  { state: 'E1', scenarioId: 'E1-V2-L2', nc: 65, fill: 20.9, rangeText: '229 ≥ H > 206 mm', min: 206, max: 229 },
+  { state: 'E2', scenarioId: 'E2-V2-L3', nc: 65, fill: 24.9, rangeText: '206 ≥ H > 162 mm', min: 162, max: 206 },
+  { state: 'E3', scenarioId: 'E3-V3-L4', nc: 70, fill: 28.5, rangeText: '162 ≥ H > 118 mm', min: 118, max: 162 },
+  { state: 'E4', scenarioId: 'E4-V2-L5', nc: 65, fill: 32.0, rangeText: '118 ≥ H > 73 mm',  min: 73,  max: 118 },
+  { state: 'E5', scenarioId: 'E5-V3-L5', nc: 70, fill: 31.3, rangeText: '73 ≥ H ≥ 51 mm',   min: 51,  max: 73  },
 ] as const;
 
 

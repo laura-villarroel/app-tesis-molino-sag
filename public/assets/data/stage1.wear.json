@@ -1,8 +1,9 @@
 {
-  "schemaVersion": "1.0",
-  "updatedAt": "2026-01-28",
+  "schemaVersion": "2.0",
+  "updatedAt": "2026-08-23",
   "stage": 1,
   "sheet": "ETAPA1",
+  "source": "Corrida continua de la Etapa 1. Tabla 4.9 y Tabla 4.10 de la tesis. Equivalencia: 1 002.7 s = 6 meses de operación continua.",
   "items": {
     "E1–V4–L2": {
       "scenarioId": "E1–V4–L2",
@@ -12,37 +13,62 @@
         "transition": "E1",
         "dH_mm": 0.0,
         "v_mm_h": 0.0,
-        "t_months": 6.0,
-        "statesImage": "assets/stage1/E1_0.png"
+        "v_mm_s": 0.0,
+        "t_months": 0.0,
+        "t_sim_s": 0.0,
+        "thickness_mm": 229.0,
+        "statesImage": "assets/stage1/E1_0.png",
+        "measureImage": "assets/stage1/medicion/E1_0.png",
+        "profileImage": "assets/stage1/perfil/E1_0.png"
       },
       "transitions": [
         {
           "transition": "E2",
           "dH_mm": 44.5,
           "v_mm_h": 0.05,
+          "v_mm_s": 0.222,
           "t_months": 1.2,
-          "statesImage": "assets/stage1/E2_25.png"
+          "t_sim_s": 200.5,
+          "thickness_mm": 184.5,
+          "statesImage": "assets/stage1/E2_25.png",
+          "measureImage": "assets/stage1/medicion/E2_25.png",
+          "profileImage": "assets/stage1/perfil/E2_25.png"
         },
         {
           "transition": "E3",
           "dH_mm": 44.5,
           "v_mm_h": 0.04,
+          "v_mm_s": 0.194,
           "t_months": 1.38,
-          "statesImage": "assets/stage1/E3_50.png"
+          "t_sim_s": 229.8,
+          "thickness_mm": 140.0,
+          "statesImage": "assets/stage1/E3_50.png",
+          "measureImage": "assets/stage1/medicion/E3_50.png",
+          "profileImage": "assets/stage1/perfil/E3_50.png"
         },
         {
           "transition": "E4",
           "dH_mm": 44.5,
           "v_mm_h": 0.04,
+          "v_mm_s": 0.194,
           "t_months": 1.38,
-          "statesImage": "assets/stage1/E4_75.png"
+          "t_sim_s": 229.8,
+          "thickness_mm": 95.5,
+          "statesImage": "assets/stage1/E4_75.png",
+          "measureImage": "assets/stage1/medicion/E4_75.png",
+          "profileImage": "assets/stage1/perfil/E4_75.png"
         },
         {
           "transition": "E5",
           "dH_mm": 44.5,
           "v_mm_h": 0.03,
+          "v_mm_s": 0.13,
           "t_months": 2.05,
-          "statesImage": "assets/stage1/E5_100.png"
+          "t_sim_s": 342.6,
+          "thickness_mm": 51.0,
+          "statesImage": "assets/stage1/E5_100.png",
+          "measureImage": "assets/stage1/medicion/E5_100.png",
+          "profileImage": "assets/stage1/perfil/E5_100.png"
         }
       ]
     }

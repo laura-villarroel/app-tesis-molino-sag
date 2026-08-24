@@ -6,7 +6,7 @@
     { label: 'Ir a herramienta de decisión', link: '/decision', variant: 'cta' },
     { label: 'Ver procedimiento', link: '/procedimiento', variant: 'ghost' }
   ]"
-  [chips]="['Basado en 40+ simulaciones Rocky DEM', 'Validado con ANSYS Mechanical (FEM)']"
+  [chips]="['58 escenarios simulados en Rocky DEM', 'Verificación estructural en ANSYS Mechanical']"
   [imgScale]="1.05"
   [imgPosX]="92"
   [imgPosY]="45"
@@ -151,7 +151,7 @@
             </div>
             <div class="kpi">
               <div class="kpi__k">Llenado (%)</div>
-              <div class="kpi__v">{{ fmtPct(r.fillPct, 0) }}</div>
+              <div class="kpi__v">{{ fmtPct(r.fillPct, 1) }}</div>
             </div>
             <div class="kpi">
               <div class="kpi__k">rpm</div>
@@ -256,7 +256,7 @@
 
         <td>{{ fmtPct(r.wearPct, 0) }}</td>
         <td>{{ fmtPct(r.NcPct, 0) }}</td>
-        <td>{{ fmtPct(r.fillPct, 0) }}</td>
+        <td>{{ fmtPct(r.fillPct, 1) }}</td>
         <td>{{ fmtNum(r.rpm, 2) }}</td>
         <td>{{ fmtNum(r.totalMass_t, 2) }}</td>
         <td>{{ fmtNum(r.powerMorrell_kW, 2) }}</td>

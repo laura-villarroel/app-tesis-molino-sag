@@ -1,9 +1,9 @@
 <app-page-hero
   title="Procedimiento"
-  [subtitle]="'Trazabilidad metodológica desde la base geométrica hasta la selección final (E1–E5).'"
+  [subtitle]="'Las seis etapas del estudio, de la base geométrica a la condición recomendada para cada estado de desgaste.'"
   [imgSrc]="'assets/branding/molino-sag-v2.png'"
   [actions]="heroActions"
-  [chips]="['Basado en 40+ simulaciones Rocky DEM', 'Validado con ANSYS Mechanical (FEM)']"
+  [chips]="['58 escenarios simulados en Rocky DEM', 'Verificación estructural en ANSYS Mechanical']"
   [imgScale]="1.05"
   [imgPosX]="92"
   [imgPosY]="45"
@@ -89,7 +89,7 @@
       <!-- ETAPA 1 -->
       <ng-container *ngIf="stage() === 1">
         <div class="stageHead">
-          <h2 class="stageTitle">Etapa 1 · Simulación con desgaste activo</h2>
+          <h2 class="stageTitle">Etapa 1 · Obtención de los estados de desgaste</h2>
           <p class="stageDesc">
             Los tiempos Δt corresponden al tramo desde el estado anterior (E1→E2, E2→E3, ...).
             El acumulado alcanza el tiempo total del escenario (6 meses para E1→E5).
@@ -160,8 +160,8 @@
   <span class="stateTag" [attr.data-state]="r.state">{{ r.state }}</span>
 </td>
 
-                    <td>{{ r.dH_mm }}</td>
-                    <td>{{ r.v_mm_h }}</td>
+                    <td>{{ r.dH_mm | number:'1.1-1' }}</td>
+                    <td>{{ r.v_mm_h | number:'1.3-3' }}</td>
                     <td>{{ r.deltaMonths | number:'1.2-2' }}</td>
                     <td>{{ r.accMonths | number:'1.2-2' }}</td>
                   </tr>
@@ -195,13 +195,27 @@
 
                   <div class="stateLabel">
                     <span *ngIf="s.wearPct !== null">{{ s.wearPct }}%</span>
-                    <span class="dot">·</span> ΔH {{ s.dH_mm }} mm
-                    <span class="dot">·</span> v {{ s.v_mm_h }} mm/h
+                    <span class="dot">·</span> H {{ s.thickness_mm | number:'1.1-1' }} mm
+                    <span class="dot">·</span> ΔH {{ s.dH_mm | number:'1.1-1' }} mm
                     <ng-container *ngIf="s.state !== 'E1'">
-  <span class="dot">·</span> Δt {{ s.t_months }} meses
+  <span class="dot">·</span> v {{ s.v_mm_s | number:'1.3-3' }} mm/s
+  <span class="dot">·</span> Δt {{ s.t_months | number:'1.2-2' }} meses
 </ng-container>
 
                   </div>
+                </div>
+
+                <div class="stateTile__evidence" *ngIf="s.imgMeasure || s.imgProfile">
+                  <button type="button" class="evidenceBtn" *ngIf="s.imgMeasure"
+                          (click)="$event.stopPropagation(); openPreview(s.imgMeasure, 'Estado ' + s.state + ' · medición del diámetro interno')">
+                    <img [src]="assetUrl(s.imgMeasure)" (error)="imgFallback($event)" alt="Medición {{ s.state }}" />
+                    <span>Medición</span>
+                  </button>
+                  <button type="button" class="evidenceBtn" *ngIf="s.imgProfile"
+                          (click)="$event.stopPropagation(); openPreview(s.imgProfile, 'Estado ' + s.state + ' · perfil medido')">
+                    <img [src]="assetUrl(s.imgProfile)" (error)="imgFallback($event)" alt="Perfil {{ s.state }}" />
+                    <span>Perfil</span>
+                  </button>
                 </div>
               </article>
             </div>
@@ -215,11 +229,18 @@
   <!-- ETAPA 2 -->
 <ng-container *ngIf="stage() === 2">
    <div class="stageHead">
-    <h2 class="stageTitle">Etapa 2 · Clasificación preliminar DEM</h2>
+    <h2 class="stageTitle">Etapa 2 · Exploración operacional (DEM sin rotura)</h2>
     <p class="stageDesc">
       Se evaluaron 31 escenarios combinando estado (E1–E5), velocidad (V1–V5) y llenado (L1–L6).
       Los indicadores parciales se normalizan entre 0 y 1 y se integran en un indicador global
       para seleccionar 2 ganadores por estado.
+    </p>
+
+    <p class="stageNote">
+      El estudio incluye además un bloque complementario de 27 escenarios con la carga de bolas fijada en el 15 %,
+      la que declara la hoja de datos de proceso. Ese bloque sirve para analizar el efecto de la carga de bolas sobre
+      la demanda de potencia y no se incorpora a esta herramienta, que trabaja sobre el bloque principal. Su desarrollo
+      está en el Capítulo 5 de la tesis.
     </p>
   </div>
   <div class="card block">
@@ -316,10 +337,10 @@
     <div class="equationBlock__title">Indicador global</div>
     <div class="equation">
       I<sub>global</sub> =
+      0.35 I<sub>rot</sub> +
       0.30 I<sub>tray</sub> +
-      0.30 I<sub>rot</sub> +
       0.20 I<sub>liner</sub> +
-      0.20 I<sub>pot</sub>
+      0.15 I<sub>pot</sub>
     </div>
     <div class="equationNote">
       Indicadores normalizados entre 0 y 1. Mayor valor indica mejor desempeño operacional.
@@ -342,6 +363,14 @@
   <!-- TABLA RANKING -->
  <div class="rankingTableWrap">
   <div class="rankingTitle">Ranking por indicador global</div>
+
+  <p class="stageNote">
+    Desviación declarada en el estado E5. El ordenamiento sitúa en las dos primeras posiciones a E5-V4-L6, con índice
+    0.840, y a E5-V3-L6, con 0.783. Las etapas siguientes se ejecutaron sin embargo sobre E5-V4-L6 y sobre E5-V3-L5,
+    que ocupa la tercera posición con 0.650. Ambos comparten velocidad de giro, el 70 % de la crítica, y difieren solo
+    en el nivel de carga, de modo que la recomendación de velocidad para E5 no se ve afectada. Los estados E1 a E4 no
+    están afectados.
+  </p>
 
   <table class="rankingTable">
     <thead>
@@ -411,11 +440,11 @@
       <!-- ETAPA 3 -->
 <ng-container *ngIf="stage() === 3">
 
-  <h2 class="stageTitle">Etapa 3 · FEM (validación estructural)</h2>
+  <h2 class="stageTitle">Etapa 3 · Verificación estructural por FEM</h2>
 
   <p class="stageLead">
-    Validación con ANSYS Mechanical. El FEM se usa como filtro/restricción de diseño (verificación estructural),
-    no como parte del índice global. Haz click en el escenario para abrir su carta.
+    Verificación estructural con ANSYS Mechanical, con las cargas de contacto transferidas desde el DEM.
+    Actúa como restricción de viabilidad y no aporta indicador al índice global. Haz click en el escenario para abrir su carta.
   </p>
 
   <div class="infoCallout">
@@ -471,14 +500,14 @@
             </button>
           </td>
 
-          <td>{{ r.fResultMax_kN ?? '—' }}</td>
-          <td>{{ r.pContMax_MPa ?? '—' }}</td>
-          <td>{{ r.sigmaVMMax_MPa ?? '—' }}</td>
-          <td>{{ r.dispMax_um ?? '—' }}</td>
-          <td>{{ r.u_mJ ?? '—' }}</td>
-          <td>{{ r.fs ?? '—' }}</td>
-          <td>{{ r.reacResult_kN ?? '—' }}</td>
-          <td>{{ r.errorF_pct ?? '—' }}</td>
+          <td>{{ r.fResultMax_kN != null ? (r.fResultMax_kN | number:'1.2-2') : '—' }}</td>
+          <td>{{ r.pContMax_MPa != null ? (r.pContMax_MPa | number:'1.2-2') : '—' }}</td>
+          <td>{{ r.sigmaVMMax_MPa != null ? (r.sigmaVMMax_MPa | number:'1.2-2') : '—' }}</td>
+          <td>{{ r.dispMax_um != null ? (r.dispMax_um | number:'1.2-2') : '—' }}</td>
+          <td>{{ r.u_mJ != null ? (r.u_mJ | number:'1.2-2') : '—' }}</td>
+          <td>{{ r.fs != null ? (r.fs | number:'1.0-0') : '—' }}</td>
+          <td>{{ r.reacResult_kN != null ? (r.reacResult_kN | number:'1.2-2') : '—' }}</td>
+          <td>{{ r.errorF_pct != null ? (r.errorF_pct | number:'1.2-2') : '—' }}</td>
 
           <td *ngIf="hasStage3Comments()">{{ (r.comment || '—') }}</td>
         </tr>
@@ -574,9 +603,9 @@
               </button>
             </td>
 
-            <td>{{ r.vWear_mm_s ?? '—' }}</td>
-            <td>{{ r.vWear_mm_h ?? '—' }}</td>
-            <td>{{ r.indWear ?? '—' }}</td>
+            <td>{{ r.vWear_mm_s != null ? (r.vWear_mm_s | number:'1.4-4') : '—' }}</td>
+            <td>{{ r.vWear_mm_h != null ? (r.vWear_mm_h | number:'1.1-1') : '—' }}</td>
+            <td>{{ r.indWear != null ? (r.indWear | number:'1.2-2') : '—' }}</td>
 <td>
   <span class="pill" [class.pill--win]="(r.comment ?? '').toLowerCase().trim() === 'ganador'">
     {{ r.comment === 'ganador' ? 'Ganador' : 'Evaluado' }}
@@ -597,7 +626,7 @@
 
 <!-- ETAPA 5 -->
 <ng-container *ngIf="stage() === 5">
-  <h2 class="stageTitle">Etapa 5 · Rotura activa (DEM)</h2>
+  <h2 class="stageTitle">Etapa 5 · Estimación de producción (DEM con rotura)</h2>
 
   <p class="stageDesc">
     Simulación DEM con <b>rotura activa</b>. Se reportan KPI productivos y energéticos.
@@ -665,10 +694,10 @@
               </button>
             </td>
 
-            <td>{{ r.capacity_tph ?? '—' }}</td>
-            <td>{{ r.p80_mm ?? '—' }}</td>
-            <td>{{ r.power_kW ?? '—' }}</td>
-            <td>{{ r.ecs_kWh_t ?? '—' }}</td>
+            <td>{{ r.capacity_tph != null ? (r.capacity_tph | number:'1.2-2') : '—' }}</td>
+            <td>{{ r.p80_mm != null ? (r.p80_mm | number:'1.2-2') : '—' }}</td>
+            <td>{{ r.power_kW != null ? (r.power_kW | number:'1.1-1') : '—' }}</td>
+            <td>{{ r.ecs_kWh_t != null ? (r.ecs_kWh_t | number:'1.2-2') : '—' }}</td>
 
            <td>
   <span class="pill" [class.pill--win]="r.isWinner">
@@ -687,7 +716,7 @@
 </ng-container>
 <!-- ETAPA 6 -->
 <ng-container *ngIf="stage() === 6">
-  <h2 class="stageTitle">Etapa 6 · Indicador global y selección final</h2>
+  <h2 class="stageTitle">Etapa 6 · Integración multicriterio y selección</h2>
 
   <p class="stageDesc">
     Integración de resultados de <b>Etapa 4</b> (desgaste) y <b>Etapa 5</b> (productividad/energía) mediante el indicador global:
@@ -774,17 +803,17 @@
               </button>
             </td>
 
-            <td>{{ r.vDesg_mm_h ?? '—' }}</td>
-            <td>{{ r.indDesg ?? '—' }}</td>
+            <td>{{ r.vDesg_mm_h != null ? (r.vDesg_mm_h | number:'1.1-1') : '—' }}</td>
+            <td>{{ r.indDesg != null ? (r.indDesg | number:'1.2-2') : '—' }}</td>
 
-            <td>{{ r.capacity_tph ?? '—' }}</td>
-            <td>{{ r.indT ?? '—' }}</td>
+            <td>{{ r.capacity_tph != null ? (r.capacity_tph | number:'1.2-2') : '—' }}</td>
+            <td>{{ r.indT != null ? (r.indT | number:'1.2-2') : '—' }}</td>
 
-            <td>{{ r.p80_mm ?? '—' }}</td>
-            <td>{{ r.indP80 ?? '—' }}</td>
+            <td>{{ r.p80_mm != null ? (r.p80_mm | number:'1.2-2') : '—' }}</td>
+            <td>{{ r.indP80 != null ? (r.indP80 | number:'1.2-2') : '—' }}</td>
 
-            <td>{{ r.ecs_kWh_t ?? '—' }}</td>
-            <td>{{ r.indEcs ?? '—' }}</td>
+            <td>{{ r.ecs_kWh_t != null ? (r.ecs_kWh_t | number:'1.2-2') : '—' }}</td>
+            <td>{{ r.indEcs != null ? (r.indEcs | number:'1.2-2') : '—' }}</td>
 
            <td>{{ r.indGlobal | number:'1.2-2' }}</td>
 
@@ -817,9 +846,9 @@
           <th>Transición</th>
           <th>Escenario</th>
           <th>ΔH (mm)</th>
-          <th>v (mm/h)</th>
+          <th>v (mm/s)</th>
+          <th>Δt (s)</th>
           <th>t (meses)</th>
-          <th>t (meses, FS=0.72)</th>
         </tr>
       </thead>
 
@@ -833,10 +862,10 @@
             </button>
           </td>
 
-          <td>{{ r.deltaH_mm ?? '—' }}</td>
-          <td>{{ r.v_mm_h ?? '—' }}</td>
-          <td>{{ r.months ?? '—' }}</td>
-          <td>{{ r.monthsWithFS ?? '—' }}</td>
+          <td>{{ r.deltaH_mm != null ? (r.deltaH_mm | number:'1.1-1') : '—' }}</td>
+          <td>{{ r.v_mm_s != null ? (r.v_mm_s | number:'1.4-4') : '—' }}</td>
+          <td>{{ r.dt_s != null ? (r.dt_s | number:'1.1-1') : '—' }}</td>
+          <td>{{ r.months != null ? (r.months | number:'1.2-2') : '—' }}</td>
         </tr>
 
         <tr *ngIf="!strategyTransitions().length">
@@ -847,8 +876,8 @@
       <tfoot *ngIf="strategySummary() as s">
         <tr>
           <td colspan="4"><b>TOTAL</b></td>
-          <td><b>{{ s.months ?? '—' }}</b></td>
-          <td><b>{{ s.monthsWithFS ?? '—' }}</b></td>
+          <td><b>{{ s.seconds | number:'1.1-1' }}</b></td>
+          <td><b>{{ s.months | number:'1.2-2' }}</b></td>
         </tr>
       </tfoot>
     </table>
@@ -858,18 +887,18 @@
   <div class="strategyImpact" *ngIf="strategySummary() as s">
     <div class="impactGrid">
       <div class="impactCard">
-        <div class="impactLabel">Tiempo total (base)</div>
-        <div class="impactValue">{{ s.months ?? '—' }} <span class="impactUnit">meses</span></div>
+        <div class="impactLabel">Estrategia adaptativa</div>
+        <div class="impactValue">{{ s.months | number:'1.1-1' }} <span class="impactUnit">meses</span></div>
       </div>
 
       <div class="impactCard">
-        <div class="impactLabel">Tiempo total (FS=0.72)</div>
-        <div class="impactValue">{{ s.monthsWithFS ?? '—' }} <span class="impactUnit">meses</span></div>
+        <div class="impactLabel">Operación en condición fija</div>
+        <div class="impactValue">{{ s.monthsFixed | number:'1.1-1' }} <span class="impactUnit">meses</span></div>
       </div>
 
       <div class="impactCard impactCard--highlight">
-        <div class="impactLabel">Reducción acumulada vs base</div>
-        <div class="impactValue">{{ s.additionalMonths ?? '—' }} <span class="impactUnit">meses</span></div>
+        <div class="impactLabel">Extensión del ciclo</div>
+        <div class="impactValue">×{{ s.factor | number:'1.2-2' }} <span class="impactUnit">({{ s.additionalMonths | number:'1.1-1' }} meses más)</span></div>
       </div>
     </div>
   </div>

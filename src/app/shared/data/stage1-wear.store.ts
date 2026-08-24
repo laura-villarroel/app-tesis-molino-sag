@@ -7,7 +7,12 @@ export type Stage1WearTransition = {
   dH_mm: number;
   v_mm_h: number;
   t_months: number;
-  statesImage: string; // viene como "assets/stage1/E1_0.png"
+  v_mm_s?: number;
+  t_sim_s?: number;
+  thickness_mm?: number;
+  statesImage: string;   // render 3D del anillo
+  measureImage?: string; // captura de la medición del diámetro interno
+  profileImage?: string; // perfil medido, dos paneles
 };
 
 export type Stage1WearItem = {

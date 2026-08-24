@@ -8,18 +8,21 @@ export type StrategyAdaptiveJson = AnyObj;
 
 export type StrategyAdaptiveSummary = {
   months: number | null;
-  monthsWithFS: number | null;
+  monthsFixed: number | null;
   additionalMonths: number | null;
+  factor: number | null;
+  seconds: number | null;
+  secondsFixed: number | null;
 };
 
 export type StrategyAdaptiveTransitionRow = {
   transition: string;                 // "E1→E2"
   scenarioId: string;                 // "E1-V2-L2"
   deltaH_mm: number | null;           // ΔH (mm)
-  v_mm_h: number | null;              // v (mm/h)
-  months: number | null;              // t (meses)
-  monthsWithFS: number | null;        // t (meses, FS=0.72)
-  additionalMonthsVsBaseFS: number | null; // +meses vs base (FS)
+  v_mm_h: number | null;              // v (mm/h equivalente)
+  v_mm_s: number | null;              // v (mm/s de simulación)
+  dt_s: number | null;                // Δt (s de simulación)
+  months: number | null;              // t (meses equivalentes)
 };
 
 export type StrategyAdaptiveScenario = StrategyAdaptiveTransitionRow;
@@ -82,8 +85,11 @@ export class StrategyAdaptiveStore {
 
     return {
       months: this.pickNumber(s, ['months', 't_months', 't', 'totalMonths']),
-      monthsWithFS: this.pickNumber(s, ['monthsWithFS', 'months_with_fs', 't_months_fs', 'tFS']),
+      monthsFixed: this.pickNumber(s, ['monthsFixed', 'months_fixed', 'monthsFija', 't_months_fixed']),
       additionalMonths: this.pickNumber(s, ['additionalMonths', 'additional_months', 'extraMonths', 'deltaMonths']),
+      factor: this.pickNumber(s, ['factor', 'extensionFactor', 'factorExtension']),
+      seconds: this.pickNumber(s, ['seconds', 'dt_s', 'totalSeconds']),
+      secondsFixed: this.pickNumber(s, ['secondsFixed', 'seconds_fixed']),
     };
   }
 
@@ -101,21 +107,9 @@ export class StrategyAdaptiveStore {
       deltaH_mm: this.pickNumber(t, ['deltaH_mm', 'ΔH (mm)', 'ΔH', 'dH', 'dH_mm', 'DH']),
       v_mm_h: this.pickNumber(t, ['v_mm_h', 'v (mm/h)', 'v', 'v_mmhr', 'v_mmh']),
       months: this.pickNumber(t, ['months', 't (meses)', 't', 't_months']),
-     monthsWithFS: this.pickNumber(t, [
-  'monthsWithFS',
-  'months_with_fs',
-  't_months_fs',
-  't (meses, FS=0.72)',
-  't_fs',
-  'tFS',
-]),
-
-additionalMonthsVsBaseFS: this.pickNumber(t, [
-  'additionalMonthsVsBaseFS',
-  'additionalMonths_fs',
-  '+meses vs base (FS)',
-  'plusMonthsVsBaseFS',
-]),};
+      v_mm_s: this.pickNumber(t, ['v_mm_s', 'v (mm/s)', 'vWear_mm_s', 'v_mms']),
+      dt_s: this.pickNumber(t, ['dt_s', 'Δt (s)', 'deltaT_s', 'dt']),
+    };
   }
 
 

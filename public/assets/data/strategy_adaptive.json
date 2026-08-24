@@ -1,49 +1,60 @@
 {
-  "schemaVersion": "1.0",
-  "updatedAt": "2026-01-28",
+  "schemaVersion": "2.0",
+  "updatedAt": "2026-08-23",
   "stage": "strategy",
   "sheet": "ADAPTATIVA",
+  "source": "Matriz_Escenarios_SAG_250726.xlsx / hoja desgaste final. Equivalencia temporal: 1 002.7 s de la Etapa 1 = 6 meses de operación continua.",
   "summary": {
-    "months": 16.68,
-    "monthsWithFS": 12.01,
-    "additionalMonths": 6.01
+    "months": 22.48,
+    "monthsFixed": 6.0,
+    "additionalMonths": 16.48,
+    "factor": 3.75,
+    "seconds": 3757.5,
+    "secondsFixed": 1002.7,
+    "wearReductionPct": 73.0
   },
   "transitions": [
     {
       "transition": "E1→E2",
       "scenarioId": "E1–V2–L2",
       "dH_mm": 44.5,
-      "v_mm_h": 0.03,
-      "t_months": 2.4,
-      "t_months_fs": 1.72,
-      "additionalMonths_fs": null
+      "v_mm_s": 0.1112,
+      "v_mm_h": 0.025,
+      "dt_s": 400.2,
+      "t_months": 2.4
     },
     {
       "transition": "E2→E3",
       "scenarioId": "E2–V2–L3",
       "dH_mm": 44.5,
-      "v_mm_h": 0.02,
-      "t_months": 2.65,
-      "t_months_fs": 1.91,
-      "additionalMonths_fs": null
+      "v_mm_s": 0.1003,
+      "v_mm_h": 0.023,
+      "dt_s": 443.4,
+      "t_months": 2.65
     },
     {
       "transition": "E3→E4",
       "scenarioId": "E3–V3–L4",
       "dH_mm": 44.5,
-      "v_mm_h": 0.01,
-      "t_months": 5.17,
-      "t_months_fs": 3.72,
-      "additionalMonths_fs": null
+      "v_mm_s": 0.1008,
+      "v_mm_h": 0.023,
+      "dt_s": 441.7,
+      "t_months": 2.64
     },
     {
       "transition": "E4→E5",
-      "scenarioId": "E4–V3–L5",
+      "scenarioId": "E4–V2–L5",
       "dH_mm": 44.5,
-      "v_mm_h": 0.01,
-      "t_months": 6.46,
-      "t_months_fs": 4.65,
-      "additionalMonths_fs": null
+      "v_mm_s": 0.018,
+      "v_mm_h": 0.004,
+      "dt_s": 2472.2,
+      "t_months": 14.79
     }
-  ]
+  ],
+  "fixedOperation": {
+    "scenarioId": "E1–V4–L2",
+    "note": "Corrida continua de la Etapa 1, que recorre los cinco estados bajo las condiciones del caso base.",
+    "dt_s": 1002.7,
+    "t_months": 6.0
+  }
 }

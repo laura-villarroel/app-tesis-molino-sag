@@ -29,9 +29,9 @@
           <p class="p">{{ justification }}</p>
 
           <div class="callout">
-            <div class="callout__k">Impacto operacional</div>
-            <div class="callout__v">≈ US$ 100.000 por hora de detención</div>
-            <div class="callout__s">Costo referencial por indisponibilidad del equipo.</div>
+            <div class="callout__k">{{ highlight.k }}</div>
+            <div class="callout__v">{{ highlight.v }}</div>
+            <div class="callout__s">{{ highlight.s }}</div>
           </div>
         </div>
 
@@ -91,6 +91,7 @@
     <article class="card">
       <div class="card__title">Alcance</div>
       <p class="p">{{ scope }}</p>
+      <p class="p">{{ blockNote }}</p>
     </article>
 
     <article class="card">
@@ -102,13 +103,31 @@
   </div>
 </div>
 
+    <!--  HALLAZGOS -->
+    <article class="card card--wide">
+      <div class="card__head">
+        <div>
+          <div class="card__title">Qué encontró el estudio</div>
+          <div class="muted">Resultados principales sobre los cinco estados de desgaste.</div>
+        </div>
+      </div>
+
+      <ul class="list">
+        <li *ngFor="let it of keyFindings; trackBy: trackByValue">{{ it }}</li>
+      </ul>
+
+      <div class="note note--soft">
+        <strong>Continuidad recomendada.</strong> {{ economicNote }}
+      </div>
+    </article>
+
     <!--  METODOLOGÍA / ETAPAS -->
     <article class="card card--wide">
       <div class="card__head">
         <div>
           <div class="card__title">Metodología (resumen por etapas)</div>
           <div class="muted">
-            Organización de resultados y evidencia técnica en 6 etapas del estudio.
+            Las seis etapas del estudio, en el orden en que se ejecutaron.
           </div>
         </div>
       </div>

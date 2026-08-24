@@ -23,12 +23,12 @@ export class HomeComponent {
 
 
   kpis: Kpi[] = [
-    { title: 'Estados Desgastado (Etapa 1)', value: 5, subtitle: 'E1–E5 (DEM, desgaste activo, 1300 s)', icon: 'fem'  },
-    { title: 'Simulaciones DEM (Etapa 2)', value: 31, subtitle: 'Exploración operacional (sin rotura ni desgaste)', icon: 'fem'  },
-    { title: 'Ganadores Etapa 2', value: 10, subtitle: 'Selección por indicador global', icon: 'fem'  },
-    { title: 'Casos FEM (Etapa 3)', value: 11, subtitle: 'ANSYS Mechanical (10 ganadores + base)', icon: 'fem'  },
-    { title: 'Casos DEM (Etapa 4)', value: 11, subtitle: 'Desgaste activo (velocidad de desgaste)', icon: 'fem'  },
-    { title: 'Casos DEM (Etapa 5)', value: 11, subtitle: 'Rotura activa (sin desgaste activo)', icon: 'fem'  },
+    { title: 'Estados Desgastado (Etapa 1)', value: 5, subtitle: 'E1 a E5, de revestimiento nuevo a límite de recambio', icon: 'fem'  },
+    { title: 'Simulaciones DEM (Etapa 2)', value: 31, subtitle: 'Bloque principal, anclado en flujos másicos', icon: 'fem'  },
+    { title: 'Ganadores Etapa 2', value: 10, subtitle: 'Los dos mejores de cada estado por índice global', icon: 'fem'  },
+    { title: 'Casos FEM (Etapa 3)', value: 11, subtitle: 'ANSYS Mechanical, 10 preseleccionados más el caso base', icon: 'fem'  },
+    { title: 'Casos DEM (Etapa 4)', value: 11, subtitle: 'Desgaste activo, 100 s por escenario', icon: 'fem'  },
+    { title: 'Casos DEM (Etapa 5)', value: 11, subtitle: 'Rotura activa: capacidad, P80 y consumo específico', icon: 'fem'  },
     { title: 'Videos documentados', value: 54, subtitle: 'Etapa 1 (1) + Etapa 2 (31) + Etapa 4 (11) + Etapa 5 (11)', icon: 'fem'  },
   ];
 
@@ -43,12 +43,12 @@ export class HomeComponent {
 
 
   methodologySteps: Array<{ title: string; desc: string }> = [
-    { title: 'Etapa 1 — Base geométrica (DEM, desgaste activo)', desc: 'Simulación DEM con desgaste activo (1300 s) para definir estados E1–E5. Caso base: E1-V4-L2.' },
-    { title: 'Etapa 2 — Exploración operacional (DEM)', desc: '31 casos (30 + base) para evaluar desempeño operacional sin rotura y sin desgaste (comparación controlada).' },
-    { title: 'Etapa 3 — Evaluación FEM', desc: '11 casos (10 ganadores + base) evaluados en ANSYS Mechanical para respuesta estructural.' },
-    { title: 'Etapa 4 — Desgaste activo (DEM)', desc: '11 casos para estimar velocidad de desgaste (sin rotura activa).' },
-    { title: 'Etapa 5 — Rotura activa (DEM)', desc: '11 casos con rotura activa (sin desgaste activo). Se extraen indicadores finales para seleccionar 5 ganadores (E1–E5).' },
-    { title: 'Etapa 6 — Indicador global y selección final', desc: 'Cálculo del indicador global combinando resultados de Etapa 4 (desgaste activo) y Etapa 5 (rotura activa). Se determinó un escenario ganador óptimo por cada estado operativo (E1–E5).' },
+    { title: 'Etapa 1 — Obtención de los estados de desgaste', desc: 'Una corrida DEM con desgaste activo de 1 300 s sobre el caso base E1-V4-L2 define los cinco estados, de revestimiento nuevo a límite de recambio.' },
+    { title: 'Etapa 2 — Exploración operacional (DEM sin rotura)', desc: '31 escenarios anclados en flujos másicos, más 27 a carga de bolas constante. De aquí salen los candidatos que pasan a las etapas siguientes.' },
+    { title: 'Etapa 3 — Verificación estructural por FEM', desc: '11 escenarios, los diez preseleccionados más el caso base, verificados en ANSYS Mechanical con las cargas de contacto transferidas desde el DEM.' },
+    { title: 'Etapa 4 — Evaluación de la velocidad de desgaste', desc: '11 escenarios con desgaste activo durante 100 s, para medir el espesor consumido y estimar la duración de cada tramo del ciclo.' },
+    { title: 'Etapa 5 — Estimación de producción', desc: '11 escenarios con rotura activa del mineral, de los que se estiman capacidad de procesamiento, tamaño del producto y consumo específico de energía.' },
+    { title: 'Etapa 6 — Integración final y selección', desc: 'Índice global que combina los indicadores de la Etapa 4, desgaste activo, y de la Etapa 5, rotura activa. Entrega un escenario recomendado para cada estado de desgaste, de E1 a E5.' },
   ];
   trackByTitle = (_: number, item: { title: string }) => item.title;
 trackByScenario = (_: number, item: { scenario: string }) => item.scenario;
